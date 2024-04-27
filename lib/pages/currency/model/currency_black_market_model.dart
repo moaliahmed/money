@@ -1,38 +1,38 @@
-class CurrencyBankModel {
+class CurrencyBlackMarketModel {
   int? currencyId;
   String? name;
   String? image;
   String? currentBuyPrice;
-  String? currentBuyPriceChange;
+  String? currentBuyPriceColor;
   String? currentSellPrice;
-  String? currentSellPriceChange;
+  String? currentSellPriceColor;
   String? scrapedAt;
-  List<Prices>? prices;
+  List<BlackMarketPricesModel>? prices;
 
-  CurrencyBankModel(
+  CurrencyBlackMarketModel(
       {this.currencyId,
         this.name,
         this.image,
         this.currentBuyPrice,
-        this.currentBuyPriceChange,
+        this.currentBuyPriceColor,
         this.currentSellPrice,
-        this.currentSellPriceChange,
+        this.currentSellPriceColor,
         this.scrapedAt,
         this.prices});
 
-  CurrencyBankModel.fromJson(Map<String, dynamic> json) {
+  CurrencyBlackMarketModel.fromJson(Map<String, dynamic> json) {
     currencyId = json['currency_id'];
     name = json['name'];
     image = json['image'];
     currentBuyPrice = json['current_buy_price'];
-    currentBuyPriceChange = json['current_buy_price_change'];
+    currentBuyPriceColor = json['current_buy_price_color'];
     currentSellPrice = json['current_sell_price'];
-    currentSellPriceChange = json['current_sell_price_change'];
+    currentSellPriceColor = json['current_sell_price_color'];
     scrapedAt = json['scraped_at'];
     if (json['prices'] != null) {
-      prices = <Prices>[];
+      prices = <BlackMarketPricesModel>[];
       json['prices'].forEach((v) {
-        prices!.add(new Prices.fromJson(v));
+        prices!.add(new BlackMarketPricesModel.fromJson(v));
       });
     }
   }
@@ -43,9 +43,9 @@ class CurrencyBankModel {
     data['name'] = this.name;
     data['image'] = this.image;
     data['current_buy_price'] = this.currentBuyPrice;
-    data['current_buy_price_change'] = this.currentBuyPriceChange;
+    data['current_buy_price_color'] = this.currentBuyPriceColor;
     data['current_sell_price'] = this.currentSellPrice;
-    data['current_sell_price_change'] = this.currentSellPriceChange;
+    data['current_sell_price_color'] = this.currentSellPriceColor;
     data['scraped_at'] = this.scrapedAt;
     if (this.prices != null) {
       data['prices'] = this.prices!.map((v) => v.toJson()).toList();
@@ -54,28 +54,28 @@ class CurrencyBankModel {
   }
 }
 
-class Prices {
+class BlackMarketPricesModel {
   String? buyPrice;
-  String? buyRateChange;
+  String? buyPriceColor;
   String? sellPrice;
-  String? sellRateChange;
+  String? sellPriceColor;
 
-  Prices(
-      {this.buyPrice, this.buyRateChange, this.sellPrice, this.sellRateChange});
+  BlackMarketPricesModel(
+      {this.buyPrice, this.buyPriceColor, this.sellPrice, this.sellPriceColor});
 
-  Prices.fromJson(Map<String, dynamic> json) {
+  BlackMarketPricesModel.fromJson(Map<String, dynamic> json) {
     buyPrice = json['buy_price'];
-    buyRateChange = json['buy_rate_change'];
+    buyPriceColor = json['buy_price_color'];
     sellPrice = json['sell_price'];
-    sellRateChange = json['sell_rate_change'];
+    sellPriceColor = json['sell_price_color'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['buy_price'] = this.buyPrice;
-    data['buy_rate_change'] = this.buyRateChange;
+    data['buy_price_color'] = this.buyPriceColor;
     data['sell_price'] = this.sellPrice;
-    data['sell_rate_change'] = this.sellRateChange;
+    data['sell_price_color'] = this.sellPriceColor;
     return data;
   }
 }

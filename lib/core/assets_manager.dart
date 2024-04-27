@@ -6,6 +6,8 @@ class ImageAssets {
   static const String homeIcon2 = '$iconPath/1.2.png';
   static const String trendIcon1 = '$iconPath/2.1.png';
   static const String trendIcon2 = '$iconPath/2.2.png';
+  static const String newsIcon = '$iconPath/news_icon.png';
+  static const String stocksIcon = '$iconPath/stocks_icon.png';
   static const String notificationIcon1 = '$iconPath/3.1.png';
   static const String notificationIcon2 = '$iconPath/3.2.png';
   static const String profileIcon1 = '$iconPath/4.1.png';
@@ -19,5 +21,12 @@ class ImageAssets {
   static const String coinMoneyIcon = '$imagePath/Coinmoney.png';
   static const String coinMoneyLogo = '$imagePath/CoinmoneyLogo.svg';
   static const String loadingLottie = '$imagePath/loading.json';
+  static const String arrowLottie = '$imagePath/arrow_left.json';
+  static const String arrowLottie1 = '$imagePath/arrow_left1.json';
+  static const String arrowLottieRightLight = '$imagePath/arrow_right_light.json';
+  static const String arrowLottieRightDark = '$imagePath/arrow_right_dark.json';
+  static const String arrowLottieDarkLeft3 = '$imagePath/arrow_left3.json';
+  static const String arrowLottieRight = '$imagePath/arrow_right3.json';
+  static const String arrow = '$imagePath/arrow.json';
 
 }

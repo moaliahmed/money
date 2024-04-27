@@ -4,6 +4,7 @@ import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:money/pages/login/screens/onboarding_Screen.dart';
+import 'package:money/pages/main_screen/home_view.dart';
 
 import '../../../core/assets_manager.dart';
 import '../../../core/color_manger.dart';
@@ -21,7 +22,7 @@ class _OpenScreenState extends State<OpenScreen> {
   @override
   void initState() {
     Timer(const Duration(seconds: 7),
-        () =>Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => OnboardingView(),)));
+        () =>Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomeView(),)));
     super.initState();
   }
 

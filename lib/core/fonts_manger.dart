@@ -1,7 +1,8 @@
 import 'dart:ui';
 
 class FontsManager {
-  static const String fontFamily = 'Montserrat';
+  static const String fontMontserratFamily = 'Montserrat';
+  static const String fontArefRuqaaFamily = 'Amiri';
 }
 
 class FontsWeightManager {
