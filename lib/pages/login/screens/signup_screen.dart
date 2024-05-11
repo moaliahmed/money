@@ -3,7 +3,6 @@ import 'package:flutter_svg/svg.dart';
 import 'package:money/pages/login/screens/login_screen.dart';
 
 import '../../../core/assets_manager.dart';
-import '../../../core/color_manger.dart';
 import '../../../core/string_manager.dart';
 import '../component/button_component.dart';
 import '../component/text_form_field_component.dart';
@@ -37,6 +36,7 @@ class _SignUpViewState extends State<SignUpView> {
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
     return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.background,
       body: SizedBox(
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
@@ -56,12 +56,16 @@ class _SignUpViewState extends State<SignUpView> {
                       // Update with your actual file path
                       width: MediaQuery.of(context).size.width * .75,
                       fit: BoxFit.fill,
+                      color: Theme.of(context).colorScheme.primary,
                     ),
                   ),
                   SizedBox(height: height * .05),
                   Container(
                     decoration: BoxDecoration(
-                      color: ColorManager.background,
+                      color: Theme.of(context)
+                          .colorScheme
+                          .primary
+                          .withOpacity(.05),
                       borderRadius: const BorderRadius.all(Radius.circular(20)),
                     ),
                     child: Padding(
@@ -74,11 +78,12 @@ class _SignUpViewState extends State<SignUpView> {
                               children: [
                                 Text(
                                   AppString.signUp,
-                                  style: TextStyle(
-                                    fontSize: 21,
-                                    color: ColorManager.secondary,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headlineMedium!
+                                      .copyWith(
+                                          fontSize: 21,
+                                          fontWeight: FontWeight.bold),
                                 ),
                               ],
                             ),
@@ -95,7 +100,7 @@ class _SignUpViewState extends State<SignUpView> {
                           ),
                           TextFormFieldComponent(
                             title: AppString.phone,
-                            icons: Icons.email_outlined,
+                            icons: Icons.phone,
                             textEditingController: phoneController,
                           ),
                           TextFormFieldComponent(
@@ -104,76 +109,41 @@ class _SignUpViewState extends State<SignUpView> {
                             icons: Icons.lock_outline_rounded,
                             textEditingController: passwordController,
                           ),
+                          SizedBox(
+                            height: height*.01,
+                          ),
                           ButtonComponent(
                             title: AppString.signUp,
                             function: () {
-                              print('sign Up');
+
                             },
                           ),
-                          SizedBox(height: height * .05),
-                          const Text(
-                            textAlign: TextAlign.center,
-                            AppString.orSignInUsing,
-                            style: TextStyle(color: Colors.grey, fontSize: 14),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                Expanded(
-                                  child: Container(
-                                    alignment: Alignment.center,
-                                    height: 45,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(20),
-                                      color: const Color(0xff266ad1),
-                                    ),
-                                    child: const Text(
-                                      AppString.facebook,
-                                      style: TextStyle(
-                                          color: Colors.white, fontSize: 18),
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(width: 40),
-                                Expanded(
-                                  child: Container(
-                                    alignment: Alignment.center,
-                                    height: 45,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(20),
-                                      color: const Color(0xffd14426),
-                                    ),
-                                    child: const Text(
-                                      AppString.google,
-                                      style: TextStyle(
-                                          color: Colors.white, fontSize: 18),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          const Text(
-                            textAlign: TextAlign.center,
-                            AppString.byCreatingAnAccount,
-                            style: TextStyle(color: Colors.grey),
-                          ),
+                          SizedBox(height: height * .01),
+
                           Padding(
                             padding: const EdgeInsets.symmetric(vertical: 14),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                const Text('Do ${AppString.haveAnAccount}'),
+                                 Text(
+                                  'Do ${AppString.haveAnAccount}',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headlineMedium!
+                                      .copyWith(fontSize: 16),
+                                ),
                                 TextButton(
                                   onPressed: () {
-                                    Navigator.push(context, MaterialPageRoute(builder: (context) => SignInView(),));
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => SignInView(),
+                                        ));
                                   },
                                   child: Text(AppString.signIn,
                                       style: TextStyle(
                                           fontSize: 16,
-                                          color: ColorManager.primary)),
+                                        color: Theme.of(context).colorScheme.primary,)),
                                 ),
                               ],
                             ),

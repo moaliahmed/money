@@ -8,13 +8,16 @@ import '../model/silver_item.dart';
 import '../model/silver_model.dart';
 
 class SilverPageView extends StatefulWidget {
-  SilverPageView({super.key, });
+  SilverPageView({
+    super.key,
+  });
 
   @override
   State<SilverPageView> createState() => _SilverPageViewState();
 }
 
-class _SilverPageViewState extends State<SilverPageView>with AutomaticKeepAliveClientMixin {
+class _SilverPageViewState extends State<SilverPageView>
+    with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -22,106 +25,109 @@ class _SilverPageViewState extends State<SilverPageView>with AutomaticKeepAliveC
       listener: (context, state) {},
       builder: (context, state) {
         var cubit = AppCubit.get(context);
-        return
-          StreamBuilder<List<SilverModel>>(
-              stream: cubit.silverStream,
-              builder: (context, snapshot) {
-                // print(snapshot.data?[0].name);
-                switch (snapshot.connectionState) {
-                  case ConnectionState.waiting:
-                    return Center(child: CircularProgressIndicator());
-                  default:
-                    if (snapshot.hasError) {
-                      return Center(
-                        child: Text('Some Error Occurred'),
-                      );
-                    } else {
-                      return Column(
-                        children: [
-                          Container(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 20, vertical: 10),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                InkWell(
-                                  onTap: () {},
-                                  child: Row(
-                                    children: [
-                                      SizedBox(
-                                          height: 45,
-                                          width: 40,
-                                          child: Lottie.asset(
-                                            ImageAssets.arrowLottieRight,
-                                          )),
-                                      Text(
-                                        'الذهب',
-                                        style: Theme.of(context).textTheme.bodyLarge!.copyWith(fontSize: 20),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Spacer(),
-                                Text('اخر تحديث : ',
+        return StreamBuilder<List<SilverModel>>(
+          stream: cubit.getSilverStream(),
+          builder: (context, snapshot) {
+            // print(snapshot.data?[0].name);
+            switch (snapshot.connectionState) {
+              case ConnectionState.waiting:
+                return cubit.isDark
+                    ? Center(
+                        child: SizedBox(
+                            height: MediaQuery.of(context).size.height * .2,
+                            child: Lottie.asset(ImageAssets.loadingDarkLottie)))
+                    : Center(
+                        child: SizedBox(
+                            height: MediaQuery.of(context).size.height * .2,
+                            child:
+                                Lottie.asset(ImageAssets.loadingLightLottie)));
+              default:
+                if (snapshot.hasError) {
+                  return Center(
+                    child: Text('Some Error Occurred'),
+                  );
+                } else {
+                  return Column(
+                    children: [
+                      Container(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            InkWell(
+                              onTap: () {},
+                              child: Row(
+                                children: [
+                                  SizedBox(
+                                      height: 45,
+                                      width: 40,
+                                      child: Lottie.asset(
+                                        ImageAssets.arrowLottieRight,
+                                      )),
+                                  Text(
+                                    'الذهب',
                                     style: Theme.of(context)
                                         .textTheme
-                                        .headlineLarge),
-                                Text(
-                                    cubit.returnRelativeTime(
-                                        snapshot.data![0].scrapedAt!),
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .displayLarge),
-                              ],
-                            ),
-                          ),
-                          Expanded(
-                            child: ListView.separated(
-
-                              separatorBuilder: (context, index) {
-                                return const Divider(
-                                  indent: 15,
-                                  endIndent: 15,
-                                  height: 1,
-                                  color: Colors.grey,
-                                );
-                              },
-                              itemCount: snapshot.data!.length,
-                              shrinkWrap: true,
-                              itemBuilder: (context, index) {
-                                return InkWell(
-                                  onTap: () {},
-                                  child: SilverItemComponent(
-                                    image: ImageAssets.diamondSilverIcon,
-                                    currentEgyPrice: double.parse(
-                                        snapshot.data![index]
-                                            .currentPriceInEgp!),
-                                    currentUsdPrice: double.parse(
-                                        snapshot.data![index]
-                                            .currentPriceInUsd!),
-                                    name: cubit.silverList[index].name!,
-                                    currentEgyPriceChange:
-                                    double.parse(snapshot
-                                        .data![index]
-                                        .currentRateChangePercentInEgp!),
-                                    price:
-                                    cubit.extractSilverBuyPrices(
-                                        snapshot.data![index]
-                                            .prices!),
-                                    currentUsdPriceChange:
-                                    double.parse(snapshot
-                                        .data![index]
-                                        .currentRateChangePercentInUsd!),
+                                        .bodyLarge!
+                                        .copyWith(fontSize: 20),
                                   ),
-                                );
-                              },
+                                ],
+                              ),
                             ),
-                          )
-                        ],
-                      );
-                    }
+                            Spacer(),
+                            Text('اخر تحديث : ',
+                                style:
+                                    Theme.of(context).textTheme.headlineLarge),
+                            Text(
+                                cubit.returnRelativeTime(
+                                    snapshot.data![0].scrapedAt!),
+                                style:
+                                    Theme.of(context).textTheme.displayLarge),
+                          ],
+                        ),
+                      ),
+                      Expanded(
+                        child: ListView.separated(
+                          separatorBuilder: (context, index) {
+                            return const Divider(
+                              indent: 15,
+                              endIndent: 15,
+                              height: 1,
+                              color: Colors.grey,
+                            );
+                          },
+                          itemCount: snapshot.data!.length,
+                          shrinkWrap: true,
+                          itemBuilder: (context, index) {
+                            return InkWell(
+                              onTap: () {},
+                              child: SilverItemComponent(
+                                image: ImageAssets.diamondSilverIcon,
+                                currentEgyPrice: double.parse(
+                                    snapshot.data![index].currentPriceInEgp!),
+                                currentUsdPrice: double.parse(
+                                    snapshot.data![index].currentPriceInUsd!),
+                                name: cubit.silverList[index].name!,
+                                currentEgyPriceChange: double.parse(snapshot
+                                    .data![index]
+                                    .currentRateChangePercentInEgp!),
+                                price: cubit.extractSilverBuyPrices(
+                                    snapshot.data![index].prices!),
+                                currentUsdPriceChange: double.parse(snapshot
+                                    .data![index]
+                                    .currentRateChangePercentInUsd!),
+                              ),
+                            );
+                          },
+                        ),
+                      )
+                    ],
+                  );
                 }
-              });
+            }
+          },
+        );
       },
     );
   }
@@ -130,6 +136,3 @@ class _SilverPageViewState extends State<SilverPageView>with AutomaticKeepAliveC
   // TODO: implement wantKeepAlive
   bool get wantKeepAlive => true;
 }
-
-
-

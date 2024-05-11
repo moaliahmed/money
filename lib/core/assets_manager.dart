@@ -21,6 +21,8 @@ class ImageAssets {
   static const String coinMoneyIcon = '$imagePath/Coinmoney.png';
   static const String coinMoneyLogo = '$imagePath/CoinmoneyLogo.svg';
   static const String loadingLottie = '$imagePath/loading.json';
+  static const String loadingLightLottie = '$imagePath/loading_light.json';
+  static const String loadingDarkLottie = '$imagePath/loading_dark.json';
   static const String arrowLottie = '$imagePath/arrow_left.json';
   static const String arrowLottie1 = '$imagePath/arrow_left1.json';
   static const String arrowLottieRightLight = '$imagePath/arrow_right_light.json';

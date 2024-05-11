@@ -9,6 +9,7 @@ import 'package:money/pages/crypto/model/crypto_model.dart';
 import 'package:money/pages/crypto/model/stocks_model.dart';
 import 'package:money/pages/crypto/page/crypto_view.dart';
 import 'package:money/pages/gold/model/silver_model.dart';
+import 'package:sqflite/sqflite.dart';
 import '../core/shared_prefrence.dart';
 import '../core/string_manager.dart';
 import '../pages/currency/model/currency_bank_model.dart';
@@ -33,6 +34,17 @@ class AppCubit extends Cubit<AppState> {
     SettingView()
   ];
 
+  @override
+  Future<void> close() {
+    bankCurrencyStream.close();
+    blackMarketCurrencyStream.close();
+    goldStream.close();
+    silverStream.close();
+    stocksStream.close();
+    cryptoStream.close();
+    return super.close();
+  }
+
   changeScreen(int index) {
     currentScreen = index;
     emit(AppBottomNavBarChangeState());
@@ -46,12 +58,19 @@ class AppCubit extends Cubit<AppState> {
   List<CurrencyBlackMarketModel> currencyBlackMarketList = [];
   List<SilverModel> silverList = [];
 
-  late Stream<List<CurrencyBankModel>> bankCurrencyStream;
-  late Stream<List<CurrencyBlackMarketModel>> blackMarketCurrencyStream;
-  late Stream<List<GoldModel>> goldStream;
-  late Stream<List<SilverModel>> silverStream;
-  late Stream<List<CryptoModel>> cryptoStream;
-  late Stream<List<StocksModel>> stocksStream;
+  final StreamController<List<CurrencyBankModel>> bankCurrencyStream =
+      StreamController<List<CurrencyBankModel>>.broadcast();
+  final StreamController<List<CurrencyBlackMarketModel>>
+      blackMarketCurrencyStream =
+      StreamController<List<CurrencyBlackMarketModel>>.broadcast();
+  final StreamController<List<GoldModel>> goldStream =
+      StreamController<List<GoldModel>>.broadcast();
+  final StreamController<List<SilverModel>> silverStream =
+      StreamController<List<SilverModel>>.broadcast();
+  final StreamController<List<CryptoModel>> cryptoStream =
+      StreamController<List<CryptoModel>>.broadcast();
+  final StreamController<List<StocksModel>> stocksStream =
+      StreamController<List<StocksModel>>.broadcast();
 
   void initialFunction() {
     currencyScrollController.addListener(onListenerController);
@@ -60,13 +79,7 @@ class AppCubit extends Cubit<AppState> {
     silverScrollController.addListener(onListenerController);
     cryptoScrollController.addListener(onListenerController);
     stocksScrollController.addListener(onListenerController);
-
-    bankCurrencyStream = getBankCurrencyStream();
-    blackMarketCurrencyStream = getBlackMarketCurrencyStream();
-    goldStream = getGoldStream();
-    silverStream = getSilverStream();
-    cryptoStream = getCryptoStream();
-    stocksStream = getStocksStream();
+    getBankCurrencyStream();
   }
 
 /////////////// currency Bank Code
@@ -77,12 +90,20 @@ class AppCubit extends Cubit<AppState> {
       buyPrices.add(buyPrice);
     }
     return buyPrices;
+  }  List<MyData> extractCurrencyBuyPricesAndData(List<CurrencyPricesModel> pricesList) {
+    List<MyData> buyPrices = [];
+    for (var price in pricesList) {
+      double buyPrice = double.parse(price.buyPrice!);
+      DateTime dateTime=DateTime.parse(price.scrapedAt!.substring(0, 10));
+      buyPrices.add(MyData(date: dateTime, price: buyPrice));
+    }
+    return buyPrices;
   }
 
   Future<List<CurrencyBankModel>> getCurrencyBankDate() async {
     // final response = await Dio().get(AppString.currencyBankUrl).then((value) {
-    //   currencyList= List<CurrencyBankModel>.from((value.data as List)
-    //       .map((e) => CurrencyBankModel.fromJson(e)));
+    //   currencyList = List<CurrencyBankModel>.from(
+    //       (value.data as List).map((e) => CurrencyBankModel.fromJson(e)));
     // }).catchError((e) {
     //   print(e);
     // });
@@ -90,6 +111,7 @@ class AppCubit extends Cubit<AppState> {
     currencyList = [];
     response.forEach((e) => currencyList.add(CurrencyBankModel.fromJson(e)));
 
+    bankCurrencyStream.sink.add(currencyList);
     //currencyList = response.toList();
     // print('//////////////////');
     // print(response);
@@ -101,8 +123,8 @@ class AppCubit extends Cubit<AppState> {
           .asyncMap((_) => getCurrencyBankDate());
 
 /////////////// currency Black Market Code
-  List<double> extractCurrencyBlackMarketBuyPrices(
-      List<BlackMarketPricesModel> pricesList) {
+
+  List<double> extractCurrencyBlackMarketBuyPrices(List<BlackMarketPricesModel> pricesList) {
     List<double> buyPrices = [];
     for (var price in pricesList) {
       double buyPrice = double.parse(price.buyPrice!);
@@ -112,17 +134,20 @@ class AppCubit extends Cubit<AppState> {
   }
 
   Future<List<CurrencyBlackMarketModel>> getCurrencyBlackMarketDate() async {
-    // final response = await Dio().get(AppString.currencyBankUrl).then((value) {
-    //   currencyBlackMarketList= List<CurrencyBlackMarketModel>.from((value.data as List)
-    //       .map((e) => CurrencyBlackMarketModel.fromJson(e)));
+    // final response =
+    //     await Dio().get(AppString.currencyBlackBankUrl).then((value) {
+    //   currencyBlackMarketList = List<CurrencyBlackMarketModel>.from(
+    //       (value.data as List)
+    //           .map((e) => CurrencyBlackMarketModel.fromJson(e)));
     // }).catchError((e) {
     //   print(e);
     // });
-    final response = json.decode(AppString.blackMarketJson);
+      final response = json.decode(AppString.blackMarketJson);
     currencyBlackMarketList = [];
     response.forEach((e) =>
         currencyBlackMarketList.add(CurrencyBlackMarketModel.fromJson(e)));
-
+    blackMarketCurrencyStream.add(currencyBlackMarketList);
+    print('update');
     //currencyList = response.toList();
     // print('//////////////////');
     // print(response);
@@ -130,7 +155,7 @@ class AppCubit extends Cubit<AppState> {
   }
 
   Stream<List<CurrencyBlackMarketModel>> getBlackMarketCurrencyStream() =>
-      Stream.periodic(Duration(seconds: 5))
+      Stream.periodic(Duration(seconds: 3))
           .asyncMap((_) => getCurrencyBlackMarketDate());
 
   /////////// Gold Code
@@ -145,8 +170,8 @@ class AppCubit extends Cubit<AppState> {
 
   Future<List<GoldModel>> getGoldDate() async {
     // final response = await Dio().get(AppString.goldUrl).then((value) {
-    //  goldList= List<GoldModel>.from((value.data as List)
-    //        .map((e) => GoldModel.fromJson(e)));
+    //   goldList = List<GoldModel>.from(
+    //       (value.data as List).map((e) => GoldModel.fromJson(e)));
     // }).catchError((e) {
     //   print(e);
     // });
@@ -154,7 +179,7 @@ class AppCubit extends Cubit<AppState> {
     final response = json.decode(AppString.goldJsons);
     goldList = [];
     response.forEach((e) => goldList.add(GoldModel.fromJson(e)));
-
+    goldStream.add(goldList);
     //currencyList = response.toList();
     //print('//////////////////');
     // print(response.data);
@@ -163,7 +188,7 @@ class AppCubit extends Cubit<AppState> {
   }
 
   Stream<List<GoldModel>> getGoldStream() =>
-      Stream.periodic(Duration(seconds: 3)).asyncMap((_) => getGoldDate());
+      Stream.periodic(Duration(seconds: 5)).asyncMap((_) => getGoldDate());
 
 /////////// silver code
   List<double> extractSilverBuyPrices(List<SilverPricesModel> pricesList) {
@@ -177,15 +202,15 @@ class AppCubit extends Cubit<AppState> {
 
   Future<List<SilverModel>> getSilverDate() async {
     // final response = await Dio().get(AppString.silverUrl).then((value) {
-    //   silverList= List<SilverModel>.from((value.data as List)
-    //       .map((e) => SilverModel.fromJson(e)));
+    //   silverList = List<SilverModel>.from(
+    //       (value.data as List).map((e) => SilverModel.fromJson(e)));
     // }).catchError((e) {
     //   print(e);
     // });
     final response = json.decode(AppString.silverJson);
     silverList = [];
     response.forEach((e) => silverList.add(SilverModel.fromJson(e)));
-
+    silverStream.add(silverList);
     //currencyList = response.toList();
     // print('//////////////////');
     // print(response);
@@ -193,21 +218,21 @@ class AppCubit extends Cubit<AppState> {
   }
 
   Stream<List<SilverModel>> getSilverStream() =>
-      Stream.periodic(Duration(seconds: 3)).asyncMap((_) => getSilverDate());
+      Stream.periodic(Duration(seconds: 2)).asyncMap((_) => getSilverDate());
 
 /////////// crypto code
 
   Future<List<CryptoModel>> getCryptoDate() async {
-    // final response = await Dio().get(AppString.silverUrl).then((value) {
-    //   cryptoList= List<CryptoModel>.from((value.data as List)
-    //       .map((e) => CryptoModel.fromJson(e)));
+    // final response = await Dio().get(AppString.cryptoUrl).then((value) {
+    //   cryptoList = List<CryptoModel>.from(
+    //       (value.data as List).map((e) => CryptoModel.fromJson(e)));
     // }).catchError((e) {
     //   print(e);
     // });
-    final response = json.decode(AppString.cryptoJsons);
+     final response = json.decode(AppString.cryptoJsons);
     cryptoList = [];
     response.forEach((e) => cryptoList.add(CryptoModel.fromJson(e)));
-
+    cryptoStream.add(cryptoList);
     //currencyList = response.toList();
     // print('//////////////////');
     // print(response);
@@ -215,21 +240,21 @@ class AppCubit extends Cubit<AppState> {
   }
 
   Stream<List<CryptoModel>> getCryptoStream() =>
-      Stream.periodic(Duration(seconds: 3)).asyncMap((_) => getCryptoDate());
+      Stream.periodic(Duration(seconds: 5)).asyncMap((_) => getCryptoDate());
 
 /////// stocks code
 
   Future<List<StocksModel>> getStocksDate() async {
-    // final response = await Dio().get(AppString.silverUrl).then((value) {
-    //   cryptoList= List<CryptoModel>.from((value.data as List)
-    //       .map((e) => CryptoModel.fromJson(e)));
+    // final response = await Dio().get(AppString.stockUrl).then((value) {
+    //   cryptoList = List<CryptoModel>.from(
+    //       (value.data as List).map((e) => CryptoModel.fromJson(e)));
     // }).catchError((e) {
     //   print(e);
     // });
     final response = json.decode(AppString.stocksJsons);
     stocksList = [];
     response.forEach((e) => stocksList.add(StocksModel.fromJson(e)));
-
+    stocksStream.add(stocksList);
     //currencyList = response.toList();
     // print('//////////////////');
     // print(response);
@@ -291,6 +316,95 @@ class AppCubit extends Cubit<AppState> {
         emit(ChangeAppModeChangeState());
       });
     }
+  }
+
+/////////////// sqflite alert
+
+  late Database database;
+  List<Map> currencyAlert = [];
+  List<Map> goldAlert = [];
+  List<Map> silverAlert = [];
+  List<Map> stocksAlert = [];
+  List<Map> cryptoAlert = [];
+
+  createDatabase() {
+    openDatabase(
+      'alert.db',
+      version: 1,
+      onCreate: (db, version) {
+        // id integer
+        // title String
+        // time String
+        // data String
+        // status String
+        db
+            .execute(
+                'CREATE TABLE alert (id INTEGER PRIMARY KEY,category TEXT,name TEXT,price TEXT,status TEXT)')
+            .then((value) {
+          print('table create');
+        }).catchError((error) {
+          print('Error when create table ${error.toString()}');
+        });
+      },
+      onOpen: (db) {
+        getFromDatabase(db);
+        print('database opened');
+      },
+    ).then((value) {
+      database = value;
+      print('database create');
+      emit(CreateDatabaseState());
+    });
+  }
+
+  getFromDatabase(database) {
+    currencyAlert = [];
+    goldAlert = [];
+    silverAlert = [];
+    stocksAlert = [];
+    cryptoAlert = [];
+    database.rawQuery('SELECT * FROM alert').then((value) {
+      print(value);
+      value.forEach((element) {
+        if (element['category'] == AppString.currencyAlert) {
+          currencyAlert.add(element);
+        } else if (element['category'] == AppString.goldAlert) {
+          goldAlert.add(element);
+        } else if (element['category'] == AppString.silverAlert) {
+          silverAlert.add(element);
+        } else if (element['category'] == AppString.stocksAlert) {
+          stocksAlert.add(element);
+        } else if (element['category'] == AppString.cryptoAlert) {
+          cryptoAlert.add(element);
+        }
+      });
+      emit(GetDatabaseState());
+    });
+  }
+
+  //name TEXT,category TEXT,price TEXT,status TEXT
+  Future insertDatabase({
+    required String name,
+    required String category,
+    required String price,
+    required String status,
+  }) async {
+    return await database.transaction(
+      (txn) => txn
+          .rawInsert(
+              'INSERT INTO tasks(name,category,price,status)VALUES("$name", "$category","$price","$status" )')
+          .then(
+        (value) {
+          print('$value Insert Successfully');
+          emit(InsertDatabaseState());
+          getFromDatabase(database);
+        },
+      ).catchError(
+        (error) {
+          print('Error When i Insert new Record $error');
+        },
+      ),
+    );
   }
 }
 

@@ -2,19 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lottie/lottie.dart';
 import 'package:money/cubit/app_cubit.dart';
+import 'package:money/pages/currency/screens/select_coin.dart';
 
 import '../../../core/assets_manager.dart';
 import 'currency_bank_model.dart';
 import 'currency_item.dart';
 
 class BankPageView extends StatefulWidget {
-  BankPageView({super.key, });
+  BankPageView({
+    super.key,
+  });
 
   @override
   State<BankPageView> createState() => _BankPageViewState();
 }
 
-class _BankPageViewState extends State<BankPageView>with AutomaticKeepAliveClientMixin {
+class _BankPageViewState extends State<BankPageView>
+    with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -23,12 +27,22 @@ class _BankPageViewState extends State<BankPageView>with AutomaticKeepAliveClien
       builder: (context, state) {
         var cubit = AppCubit.get(context);
         return StreamBuilder<List<CurrencyBankModel>>(
-            stream: cubit.bankCurrencyStream,
+            stream: cubit.getBankCurrencyStream(),
             builder: (context, snapshot) {
               //  print(snapshot.data?[0].name);
               switch (snapshot.connectionState) {
                 case ConnectionState.waiting:
-                  return Center(child:Lottie.asset(ImageAssets.loadingLottie));
+                  return cubit.isDark
+                      ? Center(
+                          child: SizedBox(
+                              height: MediaQuery.of(context).size.height * .2,
+                              child:
+                                  Lottie.asset(ImageAssets.loadingDarkLottie)))
+                      : Center(
+                          child: SizedBox(
+                              height: MediaQuery.of(context).size.height * .2,
+                              child: Lottie.asset(
+                                  ImageAssets.loadingLightLottie)));
                 default:
                   if (snapshot.hasError) {
                     return Center(
@@ -38,7 +52,8 @@ class _BankPageViewState extends State<BankPageView>with AutomaticKeepAliveClien
                     return Column(
                       children: [
                         Container(
-                          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 10),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
@@ -57,11 +72,17 @@ class _BankPageViewState extends State<BankPageView>with AutomaticKeepAliveClien
                                 onTap: () {},
                                 child: Row(
                                   children: [
-                                    Text('السوق السوداء',style: Theme.of(context).textTheme.displayLarge!.copyWith(fontSize: 18)),
+                                    Text('السوق السوداء',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .displayLarge!
+                                            .copyWith(fontSize: 18)),
                                     SizedBox(
-                                        height:20,
+                                        height: 20,
                                         width: 40,
-                                        child: Lottie.asset(ImageAssets.arrowLottieDarkLeft3,)),
+                                        child: Lottie.asset(
+                                          ImageAssets.arrowLottieDarkLeft3,
+                                        )),
                                   ],
                                 ),
                               )
@@ -70,7 +91,7 @@ class _BankPageViewState extends State<BankPageView>with AutomaticKeepAliveClien
                         ),
                         Expanded(
                           child: ListView.separated(
-                            controller: cubit.currencyScrollController,
+                            //controller: cubit.currencyScrollController,
                             separatorBuilder: (context, index) {
                               return const Divider(
                                 indent: 15,
@@ -82,33 +103,32 @@ class _BankPageViewState extends State<BankPageView>with AutomaticKeepAliveClien
                             itemCount: snapshot.data!.length,
                             shrinkWrap: true,
                             itemBuilder: (context, index) {
-                              double opacity = cubit.scrollAnimation(index, 90,cubit.currencyScrollController);
-                              double scale = opacity;
-                              if (opacity > 1) opacity = 1.0;
-                              if (opacity < 0) opacity = 0.0;
-                              if (scale > 1) scale = 1.0;
-                              return Opacity(
-                                opacity: opacity,
-                                child: Transform(
-                                  transform: Matrix4.identity()..scale(scale,1.0),
-                                  child: InkWell(
-                                    onTap: () {},
-                                    child: CurrencyItemComponent(
-                                      image: cubit.currencyList[index].image!,
-                                      currentBuyPrice: double.parse(
-                                          snapshot.data![index].currentBuyPrice!),
-                                      currentSellPrice: double.parse(
-                                          snapshot.data![index].currentSellPrice!),
-                                      name: cubit.currencyList[index].name!,
-                                      currentBuyPriceChange: double.parse(cubit
-                                          .currencyList[index]
-                                          .currentBuyPriceChange!),
-                                      price: cubit.extractCurrencyBuyPrices(
-                                          snapshot.data![index].prices!),
-                                      currentSellPriceChange: double.parse(snapshot
-                                          .data![index].currentSellPriceChange!),
-                                    ),
-                                  ),
+                              return InkWell(
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => PartOne(
+                                            dataList: cubit
+                                                .extractCurrencyBuyPricesAndData(
+                                                    snapshot
+                                                        .data![index].prices!)),
+                                      ));
+                                },
+                                child: CurrencyItemComponent(
+                                  image: cubit.currencyList[index].image!,
+                                  currentBuyPrice: double.parse(
+                                      snapshot.data![index].currentBuyPrice!),
+                                  currentSellPrice: double.parse(
+                                      snapshot.data![index].currentSellPrice!),
+                                  name: cubit.currencyList[index].name!,
+                                  currentBuyPriceChange: double.parse(cubit
+                                      .currencyList[index]
+                                      .currentBuyPriceChange!),
+                                  price: cubit.extractCurrencyBuyPrices(
+                                      snapshot.data![index].prices!),
+                                  currentSellPriceChange: double.parse(snapshot
+                                      .data![index].currentSellPriceChange!),
                                 ),
                               );
                             },

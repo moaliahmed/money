@@ -1,10 +1,10 @@
-import 'dart:ui';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lottie/lottie.dart';
 import 'package:money/pages/news/presentation/screans/web_view.dart';
 
+import '../../../../core/assets_manager.dart';
 import '../controller/news_cubit.dart';
 
 class NewsLayout extends StatelessWidget {
@@ -63,7 +63,18 @@ class NewsLayout extends StatelessWidget {
             ),
           );
         },
-        listener: (context, state) {},
+        listener: (context, state) {
+          if(state is NewsGetLoadingState){
+          
+                     Center(
+                      child: SizedBox(
+                          height: MediaQuery.of(context).size.height * .2,
+                          child:
+                          Lottie.asset(ImageAssets.loadingDarkLottie)))
+                      ;
+
+          }
+        },
       ),
     );
   }

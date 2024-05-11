@@ -43,17 +43,18 @@ class _TextFormFieldComponentState extends State<TextFormFieldComponent> {
                     // Based on passwordVisible state choose the icon
                     _passwordVisible
                         ? Icons.visibility_outlined
-                        : Icons.visibility_off_outlined,color:  Colors.blue,
+                        : Icons.visibility_off_outlined,
+                    //color:  Colors.blue,
                   ),
                 )
               : const Text(''),
           prefixIcon: Icon(
             widget.icons,
-            color: const Color(0xff0090ff),
+           // color: const Color(0xff0090ff),
           ),
           hintText: widget.title,
           hintStyle:
-              const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+              const TextStyle( fontWeight: FontWeight.bold),
         ),
         obscureText: !_passwordVisible,
       ),

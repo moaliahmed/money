@@ -4,7 +4,6 @@ import 'package:money/pages/login/screens/signup_screen.dart';
 import 'package:money/pages/main_screen/home_view.dart';
 
 import '../../../core/assets_manager.dart';
-import '../../../core/color_manger.dart';
 import '../../../core/routes_manager.dart';
 import '../../../core/string_manager.dart';
 import '../component/button_component.dart';
@@ -31,6 +30,8 @@ class _SignInViewState extends State<SignInView> {
   Widget build(BuildContext context) {
     double height= MediaQuery.of(context).size.height;
     return Scaffold(
+
+      backgroundColor: Theme.of(context).colorScheme.background,
       body: SizedBox(
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
@@ -50,16 +51,19 @@ class _SignInViewState extends State<SignInView> {
                       // Update with your actual file path
                       width: MediaQuery.of(context).size.width*.75,
                       fit: BoxFit.fill,
+                      color: Theme.of(context).colorScheme.primary,
                     ),
                   ), SizedBox(
                     height: height*.1,
                   ),
                   Container(
+                    height: MediaQuery.of(context).size.height*.5,
                     decoration: BoxDecoration(
-                      color: ColorManager.background,
+                      color: Theme.of(context).colorScheme.primary.withOpacity(.05),
                       borderRadius: const BorderRadius.all(Radius.circular(20)),
                     ),
                     child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         Padding(
                           padding: const EdgeInsets.all(8.0),
@@ -67,10 +71,7 @@ class _SignInViewState extends State<SignInView> {
                             children: [
                               Text(
                                 AppString.loginToYourAccount,
-                                style: TextStyle(
-                                    fontSize: 21,
-                                    color: ColorManager.secondary,
-                                    fontWeight: FontWeight.bold),
+                                style: Theme.of(context).textTheme.headlineMedium!.copyWith(fontSize: 21),
                               ),
                             ],
                           ),
@@ -93,7 +94,7 @@ class _SignInViewState extends State<SignInView> {
                             children: [
                               Text(
                                 AppString.forgotPassword,
-                                style: Theme.of(context).textTheme.bodyMedium,
+                                style: Theme.of(context).textTheme.headlineMedium!.copyWith(fontSize: 16),
                               ),
                               InkWell(
                                 onTap: () => Navigator.pushNamed(context, Routes.forgotPassword),
@@ -102,73 +103,31 @@ class _SignInViewState extends State<SignInView> {
                                   AppString.clickHere,
                                   style: TextStyle(
                                     fontSize: 16,
-                                    color: ColorManager.primary,
+                                    color: Theme.of(context).colorScheme.primary,
                                   ),
                                 ),
                               ),
                             ],
                           ),
                         ),
+                        SizedBox(
+                          height: height*.01,
+                        ),
                         ButtonComponent(
                             title: AppString.signIn,
                             function: () {
-                              // todo write Navigator go home screen
-                              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomeView(),));
+                              Navigator.push(context,MaterialPageRoute(builder:(context) => HomeView(),));
                             },),
                          SizedBox(
-                          height: height*.05,
+                          height: height*.01,
                         ),
-                        const Text(
-                          textAlign: TextAlign.center,
-                          AppString.orSignInUsing,
-                          style: TextStyle(color: Colors.grey, fontSize: 14),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              Container(
-                                alignment: Alignment.center,
-                                width: MediaQuery.of(context).size.width / 3,
-                                height: 45,
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(20),
-                                    color: const Color(0xff266ad1)),
-                                child: const Text(
-                                  AppString.facebook,
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 18),
-                                ),
-                              ),
-                              Container(
-                                alignment: Alignment.center,
-                                width: MediaQuery.of(context).size.width / 3,
-                                height: 45,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(20),
-                                  color: const Color(0xffd14426),
-                                ),
-                                child: const Text(
-                                  AppString.google,
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 18),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        const Text(
-                          textAlign: TextAlign.center,
-                          AppString.byCreatingAnAccount,
-                          style: TextStyle(color: Colors.grey),
-                        ),
+
                         Padding(
                           padding: const EdgeInsets.symmetric(vertical: 14),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              const Text('Don’t ${AppString.haveAnAccount}'),
+                               Text('Don’t ${AppString.haveAnAccount}',style: Theme.of(context).textTheme.headlineMedium!.copyWith(fontSize: 16),),
                               TextButton(
                                 onPressed: () {
                                   Navigator.push(context, MaterialPageRoute(builder: (context) => SignUpView(),));
@@ -177,7 +136,7 @@ class _SignInViewState extends State<SignInView> {
                                   AppString.signUp,
                                   style: TextStyle(
                                     fontSize: 16,
-                                    color: ColorManager.primary,
+                                    color: Theme.of(context).colorScheme.primary,
                                   ),
                                 ),
                               ),

@@ -23,22 +23,32 @@ class _GoldPageViewState extends State<GoldPageView>with AutomaticKeepAliveClien
       builder: (context, state) {
         var cubit = AppCubit.get(context);
         return StreamBuilder<List<GoldModel>>(
-            stream: cubit.goldStream,
+            stream: cubit.getGoldStream(),
             builder: (context, snapshot) {
               print(snapshot.data?[0].name);
               switch (snapshot.connectionState) {
                 case ConnectionState.waiting:
-                  return Center(child: CircularProgressIndicator());
+                  return cubit.isDark
+                      ? Center(
+                      child: SizedBox(
+                          height: MediaQuery.of(context).size.height * .2,
+                          child:
+                          Lottie.asset(ImageAssets.loadingLightLottie)))
+                      : Center(
+                      child: SizedBox(
+                          height: MediaQuery.of(context).size.height * .2,
+                          child: Lottie.asset(
+                              ImageAssets.loadingLightLottie)));
                 default:
                   if (snapshot.hasError) {
-                    return Center(
+                    return const Center(
                       child: Text('Some Error Occurred'),
                     );
                   } else {
                     return Column(
                       children: [
                         Container(
-                          padding: EdgeInsets.symmetric(
+                          padding: const EdgeInsets.symmetric(
                               horizontal: 20, vertical: 10),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.end,

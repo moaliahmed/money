@@ -1,8 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:money/src/app_root.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
 import 'core/bloc_observer/bloc_observer.dart';
 import 'core/shared_prefrence.dart';
 

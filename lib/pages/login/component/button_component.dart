@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:money/core/color_manger.dart';
 
 class ButtonComponent extends StatelessWidget {
+   
    ButtonComponent({
     super.key,
     required this.title,
@@ -20,13 +20,13 @@ class ButtonComponent extends StatelessWidget {
         alignment: Alignment.center,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
-          color: ColorManager.primary,
+          color: Theme.of(context).colorScheme.primary,
         ),
         height: 57,
         width: MediaQuery.of(context).size.width,
         child: Text(
           title,
-          style: const TextStyle(color: Colors.white, fontSize: 22),
+          style:  TextStyle(color:Theme.of(context).colorScheme.onSecondary,fontSize: 22),
         ),
       ),
     );

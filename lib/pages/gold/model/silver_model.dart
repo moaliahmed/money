@@ -67,6 +67,7 @@ class SilverPricesModel {
   String? priceInUsd;
   String? rateChangeInUsd;
   String? rateChangePercentInUsd;
+  String? scrapedAt;
 
   SilverPricesModel(
       {this.priceInEgp,
@@ -74,7 +75,8 @@ class SilverPricesModel {
         this.rateChangePercentInEgp,
         this.priceInUsd,
         this.rateChangeInUsd,
-        this.rateChangePercentInUsd});
+        this.rateChangePercentInUsd,
+        this.scrapedAt});
 
   SilverPricesModel.fromJson(Map<String, dynamic> json) {
     priceInEgp = json['price_in_egp'];
@@ -83,6 +85,7 @@ class SilverPricesModel {
     priceInUsd = json['price_in_usd'];
     rateChangeInUsd = json['rate_change_in_usd'];
     rateChangePercentInUsd = json['rate_change_percent_in_usd'];
+    scrapedAt = json['scraped_at'];
   }
 
   Map<String, dynamic> toJson() {
@@ -93,6 +96,9 @@ class SilverPricesModel {
     data['price_in_usd'] = this.priceInUsd;
     data['rate_change_in_usd'] = this.rateChangeInUsd;
     data['rate_change_percent_in_usd'] = this.rateChangePercentInUsd;
+    data['scraped_at'] = this.scrapedAt;
     return data;
   }
 }
+
+//SilverPricesModel

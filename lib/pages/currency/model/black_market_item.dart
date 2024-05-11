@@ -1,10 +1,5 @@
 import 'package:chart_sparkline/chart_sparkline.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-
-import '../../../core/style_manager.dart';
-import 'currency_bank_model.dart';
-
 class BlackMarketItemComponent extends StatelessWidget {
 //  final CurrencyBank item;
   final String image;

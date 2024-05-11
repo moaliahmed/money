@@ -59,15 +59,21 @@ class CurrencyPricesModel {
   String? buyRateChange;
   String? sellPrice;
   String? sellRateChange;
+  String? scrapedAt;
 
   CurrencyPricesModel(
-      {this.buyPrice, this.buyRateChange, this.sellPrice, this.sellRateChange});
+      {this.buyPrice,
+        this.buyRateChange,
+        this.sellPrice,
+        this.sellRateChange,
+        this.scrapedAt});
 
   CurrencyPricesModel.fromJson(Map<String, dynamic> json) {
     buyPrice = json['buy_price'];
     buyRateChange = json['buy_rate_change'];
     sellPrice = json['sell_price'];
     sellRateChange = json['sell_rate_change'];
+    scrapedAt = json['scraped_at'];
   }
 
   Map<String, dynamic> toJson() {
@@ -76,6 +82,12 @@ class CurrencyPricesModel {
     data['buy_rate_change'] = this.buyRateChange;
     data['sell_price'] = this.sellPrice;
     data['sell_rate_change'] = this.sellRateChange;
+    data['scraped_at'] = this.scrapedAt;
     return data;
   }
+}
+class MyData {
+  DateTime date;
+  double price;
+  MyData({required this.date,required this.price});
 }

@@ -6,7 +6,6 @@ import 'package:money/pages/login/screens/login_screen.dart';
 
 import '../../../core/assets_manager.dart';
 import '../../../core/color_manger.dart';
-import '../../../core/routes_manager.dart';
 import '../../../core/string_manager.dart';
 import '../component/dotindicator_component.dart';
 import '../component/onbourd_component.dart';

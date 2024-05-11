@@ -24,11 +24,21 @@ class _CryptoPageViewState extends State<CryptoPageView>
       builder: (context, state) {
         var cubit = AppCubit.get(context);
         return StreamBuilder<List<CryptoModel>>(
-            stream: cubit.cryptoStream,
+            stream: cubit.getCryptoStream(),
             builder: (context, snapshot) {
               switch (snapshot.connectionState) {
                 case ConnectionState.waiting:
-                  return Center(child: CircularProgressIndicator());
+                  return cubit.isDark
+                      ? Center(
+                      child: SizedBox(
+                          height: MediaQuery.of(context).size.height * .2,
+                          child:
+                          Lottie.asset(ImageAssets.loadingDarkLottie)))
+                      : Center(
+                      child: SizedBox(
+                          height: MediaQuery.of(context).size.height * .2,
+                          child: Lottie.asset(
+                              ImageAssets.loadingLightLottie)));
                 default:
                   if (snapshot.hasError) {
                     return Center(
@@ -74,7 +84,7 @@ class _CryptoPageViewState extends State<CryptoPageView>
                         ),
                         Expanded(
                           child: ListView.separated(
-                            controller: cubit.cryptoScrollController,
+                           // controller: cubit.cryptoScrollController,
                             separatorBuilder: (context, index) {
                               return const Divider(
                                 indent: 15,
@@ -86,28 +96,18 @@ class _CryptoPageViewState extends State<CryptoPageView>
                             itemCount: 20,
                             shrinkWrap: true,
                             itemBuilder: (context, index) {
-                              double opacity = cubit.scrollAnimation(index, 90,cubit.cryptoScrollController);
-                              double scale = opacity;
-                              if (opacity > 1) opacity = 1.0;
-                              if (opacity < 0) opacity = 0.0;
-                              if (scale > 1) scale = 1.0;
-                              return Opacity(
-                                opacity: opacity,
-                                child: Transform(
-                                  transform: Matrix4.identity()..scale(scale,1.0),
-                                  child: InkWell(
-                                    onTap: () {},
-                                    child: CryptoItemComponent(
-                                      lastPrice: double.parse(
-                                          snapshot.data![index].lastPrice!),
-                                      volume: snapshot.data![index].volume!,
-                                      name: cubit.cryptoList[index].companyName!,
-                                      change: double.parse(
-                                          snapshot.data![index].change!),
-                                      changePercent:
-                                          snapshot.data![index].changePercent!,
-                                    ),
-                                  ),
+
+                              return InkWell(
+                                onTap: () {},
+                                child: CryptoItemComponent(
+                                  lastPrice: double.parse(
+                                      snapshot.data![index].lastPrice!),
+                                  volume: snapshot.data![index].volume!,
+                                  name: cubit.cryptoList[index].companyName!,
+                                  change: double.parse(
+                                      snapshot.data![index].change!),
+                                  changePercent:
+                                      snapshot.data![index].changePercent!,
                                 ),
                               );
                             },

@@ -3,11 +3,9 @@ import 'dart:async';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:money/pages/login/screens/onboarding_Screen.dart';
 import 'package:money/pages/main_screen/home_view.dart';
 
 import '../../../core/assets_manager.dart';
-import '../../../core/color_manger.dart';
 
 class OpenScreen extends StatefulWidget {
   const OpenScreen({super.key});
@@ -32,13 +30,15 @@ class _OpenScreenState extends State<OpenScreen> {
       body: Container(
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
-        decoration: const BoxDecoration(),
+        decoration:  BoxDecoration(
+          color: Theme.of(context).colorScheme.onBackground
+        ),
         child: Column(mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Image.asset(ImageAssets.coinMoneyIcon),
+                Image.asset(ImageAssets.coinMoneyIcon,color: Theme.of(context).colorScheme.onPrimary,),
                 const Gap(6),
                 AnimatedTextKit(
                   totalRepeatCount: 2,
@@ -48,7 +48,7 @@ class _OpenScreenState extends State<OpenScreen> {
                           textStyle: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 52,
-                              color: ColorManager.primary),
+                              color: Theme.of(context).colorScheme.onPrimary),
                           textAlign: TextAlign.center)
                   ],
                 ),
@@ -57,7 +57,10 @@ class _OpenScreenState extends State<OpenScreen> {
               padding: const EdgeInsets.symmetric(vertical: 22.0),
               child: SizedBox(
                 width: MediaQuery.of(context).size.width*.65,
-                child: LinearProgressIndicator(color: ColorManager.primary),
+                child: LinearProgressIndicator(
+                    color: Theme.of(context).colorScheme.onPrimary,
+                  backgroundColor: Theme.of(context).colorScheme.background,
+                ),
               ),
             )
           ],

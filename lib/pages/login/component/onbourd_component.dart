@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:money/core/color_manger.dart';
-import 'package:money/core/routes_manager.dart';
 
 class OnboardComponent extends StatelessWidget {
   const OnboardComponent(

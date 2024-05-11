@@ -6,7 +6,6 @@ import 'color_manger.dart';
 import 'fonts_manger.dart';
 import 'value_manager.dart';
 
-
 ThemeData lightTheme() {
   return ThemeData(
     scaffoldBackgroundColor: ColorManager.primary,
@@ -17,12 +16,14 @@ ThemeData lightTheme() {
       brightness: Brightness.light,
       primary: ColorManager.primary,
       onPrimary: Colors.white,
+      // open screen
       secondary: ColorManager.grey,
       onSecondary: Colors.white,
       primaryContainer: Colors.orange,
       error: Colors.black,
       onError: Colors.white,
-      onBackground: ColorManager.background,
+      onBackground: ColorManager.background1,
+      //open screen
       surface: ColorManager.primary,
       onSurface: Colors.white,
     ),
@@ -36,6 +37,7 @@ ThemeData lightTheme() {
 
     // app Bar theme
     appBarTheme: AppBarTheme(
+
       elevation: AppSize.s2,
       color: ColorManager.primary,
       shadowColor: ColorManager.otline,
@@ -66,29 +68,32 @@ ThemeData lightTheme() {
     ),
     // text theme
     textTheme: TextTheme(
-
       displayLarge:
           getBoldStyle(color: ColorManager.text, fontSize: FontSize.s16),
       // head line 1
-      headlineLarge:
-          getSemiBoldStyle(color: ColorManager.secondary, fontSize: FontSize.s16),
+      headlineLarge: getSemiBoldStyle(
+          color: ColorManager.secondary, fontSize: FontSize.s16),
       headlineMedium:
-          getRegularStyle(color: ColorManager.surface, fontSize: FontSize.s14),
+          getRegularStyle(color: ColorManager.text, fontSize: FontSize.s14),
       // sub title 1
       titleMedium:
           getMediumStyle(color: ColorManager.primary, fontSize: FontSize.s16),
       // caption
-      bodyLarge: getBoldItalicAmiriStyle(color: ColorManager.text,fontSize: FontSize.s16),
+      bodyLarge: getBoldItalicAmiriStyle(
+          color: ColorManager.text, fontSize: FontSize.s16),
       //body text 1
-      bodySmall: getItalicAmiriStyle(color: ColorManager.text,fontSize: FontSize.s18),
+      bodySmall:
+          getItalicAmiriStyle(color: ColorManager.text, fontSize: FontSize.s18),
     ),
     // input decoration theme
     inputDecorationTheme: InputDecorationTheme(
+      prefixIconColor: ColorManager.primary,
+      suffixIconColor: ColorManager.primary,
       contentPadding: const EdgeInsets.all(AppPadding.p8),
       labelStyle:
           getMediumStyle(color: ColorManager.text, fontSize: FontSize.s16),
-      hintStyle: getRegularStyle(
-          color: ColorManager.secondary, fontSize: FontSize.s16),
+      hintStyle:
+          getRegularStyle(color: ColorManager.text, fontSize: FontSize.s16),
       errorStyle: getRegularStyle(
         color: ColorManager.red,
       ),
@@ -147,13 +152,13 @@ ThemeData darkTheme() {
       background: ColorManager.darkBackground,
       brightness: Brightness.dark,
       primary: ColorManager.darkPrimary,
-      onPrimary: Colors.white,
+      onPrimary: ColorManager.darkPrimary,
       secondary: ColorManager.grey,
-      onSecondary: Colors.white,
+      onSecondary: Colors.black,
       primaryContainer: Colors.orange,
       error: Colors.black,
       onError: Colors.white,
-      onBackground: Colors.white,
+      onBackground: ColorManager.darkBackground,
       surface: ColorManager.primary,
       onSurface: Colors.white,
     ),
@@ -170,6 +175,10 @@ ThemeData darkTheme() {
         unselectedIconTheme: IconThemeData(color: ColorManager.secondary)),
     // app Bar theme
     appBarTheme: AppBarTheme(
+
+      systemOverlayStyle: SystemUiOverlayStyle(
+          statusBarColor: ColorManager.darkPrimary,
+          statusBarIconBrightness: Brightness.dark),
       elevation: AppSize.s2,
       color: ColorManager.darkPrimary,
       shadowColor: ColorManager.otline,
@@ -200,25 +209,28 @@ ThemeData darkTheme() {
       displayLarge:
           getBoldStyle(color: ColorManager.darkText, fontSize: FontSize.s16),
       // head line 1
-      headlineLarge:
-          getSemiBoldStyle(color: ColorManager.darkSecondary, fontSize: FontSize.s16),
+      headlineLarge: getSemiBoldStyle(
+          color: ColorManager.darkSecondary, fontSize: FontSize.s16),
       headlineMedium:
-          getRegularStyle(color: ColorManager.surface, fontSize: FontSize.s14),
+          getRegularStyle(color: ColorManager.darkText, fontSize: FontSize.s14),
       // sub title 1
       titleMedium:
           getMediumStyle(color: ColorManager.primary, fontSize: FontSize.s16),
       // caption
-      bodyLarge: getBoldItalicAmiriStyle(color: ColorManager.darkText,fontSize: FontSize.s16),
+      bodyLarge: getBoldItalicAmiriStyle(
+          color: ColorManager.darkText, fontSize: FontSize.s16),
       //body text 1
       bodySmall: getRegularStyle(color: ColorManager.text),
     ),
     // input decoration theme
     inputDecorationTheme: InputDecorationTheme(
+      suffixIconColor: ColorManager.darkPrimary,
+      prefixIconColor: ColorManager.darkPrimary,
       contentPadding: const EdgeInsets.all(AppPadding.p8),
       labelStyle:
-          getMediumStyle(color: ColorManager.text, fontSize: FontSize.s16),
-      hintStyle: getRegularStyle(
-          color: ColorManager.secondary, fontSize: FontSize.s16),
+          getMediumStyle(color: ColorManager.darkText, fontSize: FontSize.s20),
+      hintStyle:
+          getRegularStyle(color: ColorManager.darkText, fontSize: FontSize.s20),
       errorStyle: getRegularStyle(
         color: ColorManager.red,
       ),
@@ -228,7 +240,7 @@ ThemeData darkTheme() {
           Radius.circular(AppSize.s8),
         ),
         borderSide: BorderSide(
-          color: ColorManager.primary,
+          color: ColorManager.darkPrimary,
           width: AppSize.s1_5,
         ),
       ),
@@ -239,7 +251,7 @@ ThemeData darkTheme() {
           Radius.circular(AppSize.s8),
         ),
         borderSide: BorderSide(
-          color: ColorManager.primary,
+          color: ColorManager.darkPrimary,
           width: AppSize.s1_5,
         ),
       ),
@@ -250,7 +262,7 @@ ThemeData darkTheme() {
           Radius.circular(AppSize.s8),
         ),
         borderSide: BorderSide(
-          color: ColorManager.primary,
+          color: ColorManager.darkPrimary,
           width: AppSize.s1_5,
         ),
       ),

@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lottie/lottie.dart';
@@ -6,12 +5,11 @@ import 'package:money/cubit/app_cubit.dart';
 import 'package:money/pages/currency/model/black_market_item.dart';
 
 import '../../../core/assets_manager.dart';
-import 'currency_bank_model.dart';
 import 'currency_black_market_model.dart';
-import 'currency_item.dart';
 
 class BlackMarketPageView extends StatefulWidget {
-  BlackMarketPageView({
+  
+  const BlackMarketPageView({
     super.key,
   });
 
@@ -28,13 +26,23 @@ class _BlackMarketPageViewState extends State<BlackMarketPageView>
       listener: (context, state) {},
       builder: (context, state) {
         var cubit = AppCubit.get(context);
+        cubit.getCurrencyBlackMarketDate;
         return StreamBuilder<List<CurrencyBlackMarketModel>>(
-            stream: cubit.blackMarketCurrencyStream,
+            stream: cubit.getBlackMarketCurrencyStream(),
             builder: (context, snapshot) {
-
               switch (snapshot.connectionState) {
                 case ConnectionState.waiting:
-                  return Center(child: Lottie.asset(ImageAssets.loadingLottie));
+                  return cubit.isDark
+                      ? Center(
+                      child: SizedBox(
+                          height: MediaQuery.of(context).size.height * .2,
+                          child:
+                          Lottie.asset(ImageAssets.loadingDarkLottie)))
+                      : Center(
+                      child: SizedBox(
+                          height: MediaQuery.of(context).size.height * .2,
+                          child: Lottie.asset(
+                              ImageAssets.loadingLightLottie)));
                 default:
                   if (snapshot.hasError) {
                     return Center(
@@ -81,7 +89,7 @@ class _BlackMarketPageViewState extends State<BlackMarketPageView>
                         ),
                         Expanded(
                           child: ListView.separated(
-                            controller: cubit.blackMarketScrollController,
+                          //  controller: cubit.blackMarketScrollController,
                             separatorBuilder: (context, index) {
                               return const Divider(
                                 indent: 15,
@@ -93,33 +101,22 @@ class _BlackMarketPageViewState extends State<BlackMarketPageView>
                             itemCount: snapshot.data!.length,
                             shrinkWrap: true,
                             itemBuilder: (context, index) {
-                              double opacity = cubit.scrollAnimation(index, 90,cubit.blackMarketScrollController);
-                              double scale = opacity;
-                              if (opacity > 1) opacity = 1.0;
-                              if (opacity < 0) opacity = 0.0;
-                              if (scale > 1) scale = 1.0;
-                              return Opacity(
-                                opacity: opacity,
-                                child: Transform(
-                                  transform: Matrix4.identity()..scale(scale,1.0),
-                                  child: InkWell(
-                                    onTap: () {},
-                                    child: BlackMarketItemComponent(
-                                      image: cubit.currencyBlackMarketList[index].image!,
-                                      currentBuyPrice: double.parse(
-                                          snapshot.data![index].currentBuyPrice!),
-                                      currentSellPrice: double.parse(
-                                          snapshot.data![index].currentSellPrice!),
-                                      name:cubit.currencyBlackMarketList[index].name!,
-                                      currentBuyPriceChange: snapshot
-                                          .data![index].currentBuyPriceColor!,
-                                      price:
-                                          cubit.extractCurrencyBlackMarketBuyPrices(
-                                              snapshot.data![index].prices!),
-                                      currentSellPriceChange: snapshot
-                                          .data![index].currentSellPriceColor!,
-                                    ),
-                                  ),
+                              return InkWell(
+                                onTap: () {},
+                                child: BlackMarketItemComponent(
+                                  image: cubit.currencyBlackMarketList[index].image!,
+                                  currentBuyPrice: double.parse(
+                                      snapshot.data![index].currentBuyPrice!),
+                                  currentSellPrice: double.parse(
+                                      snapshot.data![index].currentSellPrice!),
+                                  name:cubit.currencyBlackMarketList[index].name!,
+                                  currentBuyPriceChange: snapshot
+                                      .data![index].currentBuyPriceColor!,
+                                  price:
+                                      cubit.extractCurrencyBlackMarketBuyPrices(
+                                          snapshot.data![index].prices!),
+                                  currentSellPriceChange: snapshot
+                                      .data![index].currentSellPriceColor!,
                                 ),
                               );
                             },

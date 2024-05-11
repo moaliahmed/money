@@ -45,13 +45,15 @@ dependencies:
   dio: ^5.4.0
   chart_sparkline: ^1.0.15+1
   timeago: ^3.6.1
-  syncfusion_flutter_datagrid: ^23.2.7
+  syncfusion_flutter_charts: ^25.1.42+1
+  syncfusion_flutter_datagrid: ^25.1.42
   webview_flutter: ^4.7.0
   lottie: ^3.1.0
   curved_navigation_bar: ^1.0.3
   dartz: ^0.10.1
   shared_preferences: ^2.2.3
   intl: ^0.19.0
+  sqflite: ^2.3.3+1
 
 dev_dependencies:
   flutter_test:

@@ -1,94 +1,127 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lottie/lottie.dart';
+import 'package:money/pages/crypto/model/crypto_item.dart';
+import 'package:money/pages/crypto/model/crypto_model.dart';
 
-import '../currency/model/currency_item.dart';
+import '../../../core/assets_manager.dart';
+import '../../../cubit/app_cubit.dart';
 
 class Scroll extends StatefulWidget {
   const Scroll({super.key});
 
   @override
-  State<Scroll> createState() => _ScrollState();
+  State<Scroll> createState() => _CryptoPageViewState();
 }
 
-class _ScrollState extends State<Scroll> {
-  final controller = ScrollController();
- late double itemSize ;
-
-  void onListenerController() {
-    setState(() {});
-  }
-
-  @override
-  void initState() {
-    controller.addListener(onListenerController);
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    controller.removeListener(onListenerController);
-    super.dispose();
-  }
-
+class _CryptoPageViewState extends State<Scroll>
+    with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
-    itemSize=MediaQuery.of(context).size.height*.02;
-    return Scaffold(
-      appBar: AppBar(),
-      backgroundColor: Colors.white,
-      body: _body(),
+    super.build(context);
+    return BlocConsumer<AppCubit, AppState>(
+      listener: (context, state) {},
+      builder: (context, state) {
+        var cubit = AppCubit.get(context);
+        return StreamBuilder<List<CryptoModel>>(
+            stream: cubit.cryptoStream.stream,
+            builder: (context, snapshot) {
+              switch (snapshot.connectionState) {
+                case ConnectionState.waiting:
+                  return Center(child:Lottie.asset(ImageAssets.loadingLottie));
+                default:
+                  if (snapshot.hasError) {
+                    return Center(
+                      child: Text('Some Error Occurred'),
+                    );
+                  } else {
+                    return Column(
+                      children: [
+                        Container(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 10),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Text('Last Update : ',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headlineLarge),
+                              Text(snapshot.data![0].marketTime!,
+                                  style:
+                                  Theme.of(context).textTheme.displayLarge),
+                              Spacer(),
+                              InkWell(
+                                onTap: () {},
+                                child: Row(
+                                  children: [
+                                    Text('Stocks',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyLarge!
+                                            .copyWith(fontSize: 20)),
+                                    SizedBox(
+                                        height: 30,
+                                        width: 50,
+                                        child: Lottie.asset(
+                                          ImageAssets.arrowLottieRight,
+                                        )),
+                                  ],
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                        Expanded(
+                          child: ListView.separated(
+                            controller: cubit.cryptoScrollController,
+                            separatorBuilder: (context, index) {
+                              return const Divider(
+                                indent: 15,
+                                endIndent: 15,
+                                height: 1,
+                                color: Colors.grey,
+                              );
+                            },
+                            itemCount: 20,
+                            shrinkWrap: true,
+                            itemBuilder: (context, index) {
+                              double opacity = cubit.scrollAnimation(index, 90,cubit.cryptoScrollController);
+                              double scale = opacity;
+                              if (opacity > 1) opacity = 1.0;
+                              if (opacity < 0) opacity = 0.0;
+                              if (scale > 1) scale = 1.0;
+                              return Opacity(
+                                opacity: opacity,
+                                child: Transform(
+                                  transform: Matrix4.identity()..scale(scale,1.0),
+                                  child: InkWell(
+                                    onTap: () {},
+                                    child: CryptoItemComponent(
+                                      lastPrice: double.parse(
+                                          snapshot.data![index].lastPrice!),
+                                      volume: snapshot.data![index].volume!,
+                                      name: cubit.cryptoList[index].companyName!,
+                                      change: double.parse(
+                                          snapshot.data![index].change!),
+                                      changePercent:
+                                      snapshot.data![index].changePercent!,
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        )
+                      ],
+                    );
+                  }
+              }
+            });
+      },
     );
   }
 
-  Widget _body() => _listView();
-
-  Widget _listView() => SizedBox(
-        height: MediaQuery.of(context).size.height,
-        child: ListView.separated(
-          controller: controller,
-          separatorBuilder: (context, index) {
-            return const Divider(
-              indent: 15,
-              endIndent: 15,
-              height: 1,
-              color: Colors.grey,
-            );
-          },
-          itemCount: 20,
-          shrinkWrap: true,
-          itemBuilder: (context, index) {
-            print(itemSize);
-            final itemOffset= index*80;
-            final different=controller.offset-itemOffset;
-            final percent=1-(different/(80/2));
-            double opacity = percent;
-            double scale = percent;
-            if (opacity > 1) opacity = 1.0;
-            if (opacity < 0) opacity = 0.0;
-            if (scale > 1) scale = 1.0;
-            return Opacity(
-              opacity: opacity,
-              child: Transform(
-                alignment: Alignment.center,
-                transform:  Matrix4.identity()..scale(scale,1.0),
-                child: InkWell(
-                  onTap: () {},
-                  child: CurrencyItemComponent(
-                    image:"https://banklive.net/flags/1x1/us.svg",
-                    currentBuyPrice: double.parse(
-                       '47'),
-                    currentSellPrice: double.parse(
-                       '47'),
-                    name: 'الدولار الأمريكي',
-                    currentBuyPriceChange:
-                    double.parse('47'),
-                    price: [47,46,40,50],
-                    currentSellPriceChange:
-                    double.parse('.46'),
-                  ),
-                ),
-              ),
-            );
-          },
-        ),
-      );
+  @override
+  bool get wantKeepAlive => true;
 }
