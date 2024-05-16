@@ -102,12 +102,12 @@ class CurrencyItemComponent extends StatelessWidget {
                               ),
                             ),
                             currentBuyPriceChange >= 0
-                                ? Icon(
+                                ? const Icon(
                                     Icons.arrow_drop_up,
                                     size: 18,
                                     color: Colors.green,
                                   )
-                                : Icon(
+                                : const Icon(
                                     Icons.arrow_drop_down,
                                     size: 18,
                                     color: Colors.red,
@@ -136,12 +136,12 @@ class CurrencyItemComponent extends StatelessWidget {
                               ),
                             ),
                             currentSellPriceChange >= 0
-                                ? Icon(
+                                ? const Icon(
                                     Icons.arrow_drop_up,
                                     size: 18,
                                     color: Colors.green,
                                   )
-                                : Icon(
+                                : const Icon(
                                     Icons.arrow_drop_down,
                                     size: 18,
                                     color: Colors.red,

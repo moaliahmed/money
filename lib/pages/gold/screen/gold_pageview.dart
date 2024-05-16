@@ -25,7 +25,7 @@ class _GoldPageViewState extends State<GoldPageView>with AutomaticKeepAliveClien
         return StreamBuilder<List<GoldModel>>(
             stream: cubit.getGoldStream(),
             builder: (context, snapshot) {
-              print(snapshot.data?[0].name);
+
               switch (snapshot.connectionState) {
                 case ConnectionState.waiting:
                   return cubit.isDark

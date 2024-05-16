@@ -11,14 +11,14 @@ class CurrencyBankModel {
 
   CurrencyBankModel(
       {this.currencyId,
-        this.name,
-        this.image,
-        this.currentBuyPrice,
-        this.currentBuyPriceChange,
-        this.currentSellPrice,
-        this.currentSellPriceChange,
-        this.scrapedAt,
-        this.prices});
+      this.name,
+      this.image,
+      this.currentBuyPrice,
+      this.currentBuyPriceChange,
+      this.currentSellPrice,
+      this.currentSellPriceChange,
+      this.scrapedAt,
+      this.prices});
 
   CurrencyBankModel.fromJson(Map<String, dynamic> json) {
     currencyId = json['currency_id'];
@@ -32,23 +32,23 @@ class CurrencyBankModel {
     if (json['prices'] != null) {
       prices = <CurrencyPricesModel>[];
       json['prices'].forEach((v) {
-        prices!.add(new CurrencyPricesModel.fromJson(v));
+        prices!.add(CurrencyPricesModel.fromJson(v));
       });
     }
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['currency_id'] = this.currencyId;
-    data['name'] = this.name;
-    data['image'] = this.image;
-    data['current_buy_price'] = this.currentBuyPrice;
-    data['current_buy_price_change'] = this.currentBuyPriceChange;
-    data['current_sell_price'] = this.currentSellPrice;
-    data['current_sell_price_change'] = this.currentSellPriceChange;
-    data['scraped_at'] = this.scrapedAt;
-    if (this.prices != null) {
-      data['prices'] = this.prices!.map((v) => v.toJson()).toList();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['currency_id'] = currencyId;
+    data['name'] = name;
+    data['image'] = image;
+    data['current_buy_price'] = currentBuyPrice;
+    data['current_buy_price_change'] = currentBuyPriceChange;
+    data['current_sell_price'] = currentSellPrice;
+    data['current_sell_price_change'] = currentSellPriceChange;
+    data['scraped_at'] = scrapedAt;
+    if (prices != null) {
+      data['prices'] = prices!.map((v) => v.toJson()).toList();
     }
     return data;
   }
@@ -63,10 +63,10 @@ class CurrencyPricesModel {
 
   CurrencyPricesModel(
       {this.buyPrice,
-        this.buyRateChange,
-        this.sellPrice,
-        this.sellRateChange,
-        this.scrapedAt});
+      this.buyRateChange,
+      this.sellPrice,
+      this.sellRateChange,
+      this.scrapedAt});
 
   CurrencyPricesModel.fromJson(Map<String, dynamic> json) {
     buyPrice = json['buy_price'];
@@ -77,17 +77,19 @@ class CurrencyPricesModel {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['buy_price'] = this.buyPrice;
-    data['buy_rate_change'] = this.buyRateChange;
-    data['sell_price'] = this.sellPrice;
-    data['sell_rate_change'] = this.sellRateChange;
-    data['scraped_at'] = this.scrapedAt;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['buy_price'] = buyPrice;
+    data['buy_rate_change'] = buyRateChange;
+    data['sell_price'] = sellPrice;
+    data['sell_rate_change'] = sellRateChange;
+    data['scraped_at'] = scrapedAt;
     return data;
   }
 }
+
 class MyData {
   DateTime date;
   double price;
-  MyData({required this.date,required this.price});
+
+  MyData({required this.date, required this.price});
 }

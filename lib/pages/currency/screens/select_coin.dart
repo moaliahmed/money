@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -8,19 +6,37 @@ import '../model/currency_bank_model.dart';
 import 'head_card_component.dart';
 
 class PartOne extends StatelessWidget {
-  PartOne({super.key, required this.dataList});
+  PartOne({
+    super.key,
+    required this.dataList,
+    required this.name,
+    required this.image,
+    required this.scrapedAt,
+    required this.currentSellPrice,
+    required this.currentBuyPrice,
+  });
 
   List<Color> gradientColors = [
     const Color(0xffe68823),
     const Color(0xffe68823),
+    //  Color(0xff007200),
+    //Color(0xff008000),
   ];
-  List<MyData> dataList = [];
+  List<CurrencyPricesModel> dataList = [];
+  late double graphIndex;
+
+  final String name;
+  final String image;
+  final String scrapedAt;
+  final String currentSellPrice;
+  final String currentBuyPrice;
 
   @override
   Widget build(BuildContext context) {
-    print(dataList[0].date.toString());
+    graphIndex = 0;
+    print(dataList[0]);
     List<FlSpot> spots = dataList
-        .map((point) => FlSpot((point.date.day+(point.date.month-1)*30).toDouble(), point.price))
+        .map((point) => FlSpot(graphIndex++, double.parse(point.buyPrice!)))
         .toList();
     print(spots);
 
@@ -29,6 +45,7 @@ class PartOne extends StatelessWidget {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
       appBar: AppBar(
+        iconTheme: IconThemeData(color: Theme.of(context).colorScheme.onSecondary),
         backgroundColor: Theme.of(context).colorScheme.primary,
         title: Image.asset(
           'assets/images/Coinmoney.png',
@@ -40,24 +57,148 @@ class PartOne extends StatelessWidget {
         child: Column(
           children: [
             SizedBox(
-              height: 160,
+              height: 145,
               child: headCardComponent(context),
             ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height * .5,
+            Container(
+              height: myHeight * .15,
+              width: myWidth,
+              //padding: const EdgeInsets.symmetric(horizontal: 9),
+              child: Directionality(
+                textDirection: TextDirection.rtl,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'سعر البيع : ',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyLarge!
+                                  .copyWith(fontSize: 26),
+                            ),
+                            Column(
+                              children: [
+                                Text(
+                                    // currentBuyPrice.toStringAsFixed(2),
+                                    '47,7',
+                                    overflow: TextOverflow.ellipsis,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyLarge!
+                                        .copyWith(fontSize: 24)),
+                                Row(
+                                  children: [
+                                    Text(
+                                      // currentBuyPriceChange.toStringAsFixed(3),
+                                      ',2',
+                                      style: TextStyle(
+                                          // color: currentBuyPriceChange >= 0
+                                          //     ? Colors.green
+                                          //     : Colors.red,
+                                          fontSize: 18,
+                                          color: Colors.green),
+                                    ),
+                                    // currentBuyPriceChange >= 0?
+                                    const Icon(
+                                      Icons.arrow_drop_up,
+                                      size: 18,
+                                      color: Colors.green,
+                                    )
+                                  ],
+                                )
+                              ],
+                            )
+                          ],
+                        ),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'سعر الشراء : ',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyLarge!
+                                  .copyWith(fontSize: 26),
+                            ),
+                            Column(
+                              children: [
+                                Text(
+                                    // currentBuyPrice.toStringAsFixed(2),
+                                    '47,7',
+                                    overflow: TextOverflow.ellipsis,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyLarge!
+                                        .copyWith(fontSize: 24)),
+                                Row(
+                                  children: [
+                                    Text(
+                                      // currentBuyPriceChange.toStringAsFixed(3),
+                                      ',2',
+                                      style: TextStyle(
+                                          // color: currentBuyPriceChange >= 0
+                                          //     ? Colors.green
+                                          //     : Colors.red,
+                                          fontSize: 18,
+                                          color: Colors.green),
+                                    ),
+                                    // currentBuyPriceChange >= 0?
+                                    const Icon(
+                                      Icons.arrow_drop_up,
+                                      size: 18,
+                                      color: Colors.green,
+                                    )
+                                  ],
+                                )
+                              ],
+                            )
+                          ],
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        SizedBox(width: myWidth * .07),
+                        Text(
+                          'التاريخ : ',
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyLarge!
+                              .copyWith(fontSize: 18),
+                        ),
+                        Text(
+                          '2024-05-08',
+                          style: Theme.of(context)
+                              .textTheme
+                              .displayLarge!
+                              .copyWith(fontSize: 16),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),SizedBox(height: myHeight*.03),
+            Expanded(
+              // height: myHeight * .3,
               child: LineChart(
                 mainData(spots),
-
               ),
             ),
-           const Spacer(),
+
             SizedBox(
               height: myHeight * 0.1,
               width: myWidth,
               // color: Colors.amber,
               child: Column(
                 children: [
-                  const Divider(),
+                  // Divider(color: Theme.of(context).colorScheme.primary,),
                   SizedBox(height: myHeight * 0.01),
                   Row(
                     children: [
@@ -122,15 +263,21 @@ class PartOne extends StatelessWidget {
 
   LineChartData mainData(List<FlSpot> spots) {
     return LineChartData(
-       lineTouchData: LineTouchData(
-         touchCallback: ( event,response) {
-           if (event is FlTapUpEvent) {
-             if (response != null && response.lineBarSpots != null) {
-                // print(event);
-                // print(response);
-             }
-           }
-       },),
+      lineTouchData: LineTouchData(
+        touchCallback: (event, response) {
+          final res = response?.lineBarSpots;
+          final res1 = event as FlTouchEvent;
+          if (res != null && res.isNotEmpty) {
+            print('event :${res1} , result : ${res[0].x}');
+            // if (event is FlTapUpEvent) {
+            //   if (response != null && response.lineBarSpots != null) {
+            //     print(event.details);
+            //     print(response.lineBarSpots);
+            //   }
+            // }
+          }
+        },
+      ),
       gridData: FlGridData(
         show: false,
         drawVerticalLine: true,
@@ -144,25 +291,25 @@ class PartOne extends StatelessWidget {
         },
         getDrawingVerticalLine: (value) {
           return const FlLine(
-            color: Colors.amber,
+            color: Color(0xff007200),
             strokeWidth: 1,
           );
         },
       ),
-      titlesData: FlTitlesData(
+      titlesData: const FlTitlesData(
         show: false,
-        rightTitles: const AxisTitles(
+        rightTitles: AxisTitles(
           sideTitles: SideTitles(showTitles: false),
         ),
-        topTitles: const AxisTitles(
+        topTitles: AxisTitles(
           sideTitles: SideTitles(showTitles: false),
         ),
         bottomTitles: AxisTitles(
           sideTitles: SideTitles(
-            showTitles: false,
+            showTitles: true,
             reservedSize: 30,
             interval: 1,
-           // getTitlesWidget: bottomTitleWidgets,
+            getTitlesWidget: bottomTitleWidgets,
           ),
         ),
         leftTitles: AxisTitles(
@@ -186,6 +333,7 @@ class PartOne extends StatelessWidget {
         LineChartBarData(
           spots: spots,
           isCurved: true,
+          preventCurveOverShooting: true,
           gradient: LinearGradient(
             colors: gradientColors,
           ),
@@ -196,14 +344,19 @@ class PartOne extends StatelessWidget {
           ),
           belowBarData: BarAreaData(
             show: true,
-            gradient: LinearGradient(
+            gradient: const LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
               colors: [
-                const Color(0xffe68823),
-                const Color(0x88e68823),
-                const Color(0x88e68823),
-                const Color(0x00e68823),
+                Color(0xffe68823),
+                Color(0x88e68823),
+                Color(0x55e68823),
+                Color(0x33e68823),
+                Color(0x00e68823),
+                //Color(0xff008000),
+                // Color(0xff38b000),
+                // Color(0xff70e000),
+                // Color(0x0070e000),
               ],
             ),
           ),

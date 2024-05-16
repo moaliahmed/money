@@ -45,7 +45,7 @@ class _BankPageViewState extends State<BankPageView>
                                   ImageAssets.loadingLightLottie)));
                 default:
                   if (snapshot.hasError) {
-                    return Center(
+                    return const Center(
                       child: Text('Some Error Occurred'),
                     );
                   } else {
@@ -109,10 +109,18 @@ class _BankPageViewState extends State<BankPageView>
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) => PartOne(
-                                            dataList: cubit
-                                                .extractCurrencyBuyPricesAndData(
-                                                    snapshot
-                                                        .data![index].prices!)),
+                                          name: cubit.currencyList[index].name!,
+                                          image:
+                                              cubit.currencyList[index].image!,
+                                          currentBuyPrice: snapshot
+                                              .data![index].currentBuyPrice!,
+                                          currentSellPrice: snapshot
+                                              .data![index].currentSellPrice!,
+                                          dataList:
+                                              snapshot.data![index].prices!,
+                                          scrapedAt: cubit
+                                              .currencyList[index].scrapedAt!,
+                                        ),
                                       ));
                                 },
                                 child: CurrencyItemComponent(
