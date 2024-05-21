@@ -8,6 +8,7 @@ import 'package:money/pages/login/screens/login_screen.dart';
 
 import '../../core/assets_manager.dart';
 import '../../core/constants_manager.dart';
+import '../../core/local_notifications.dart';
 import '../gold/screen/gold_view.dart';
 import '../news/presentation/screans/news_layout.dart';
 
@@ -27,6 +28,8 @@ class _HomeViewState extends State<HomeView> {
     const NewsLayout()
     //SettingView()
   ];
+  String name='الدولار الامريكي';
+  String price ='50';
 
   @override
   Widget build(BuildContext context) {
@@ -113,33 +116,11 @@ class _HomeViewState extends State<HomeView> {
             child: ListView(
               padding: EdgeInsets.zero,
               children: [
-                // UserAccountsDrawerHeader(
-                //   currentAccountPicture: CircleAvatar(
-                //     backgroundImage: NetworkImage(
-                //         'https://images.unsplash.com/photo-1485290334039-a3c69043e517?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTYyOTU3NDE0MQ&ixlib=rb-1.2.1&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=300'),
-                //   ),
-                //   accountEmail: Text('Mostafa@gmail.com'),
-                //   accountName: Text(
-                //     'Mostafa Gomaa',
-                //     style: TextStyle(fontSize: 24.0),
-                //   ),
-                //   decoration: BoxDecoration(
-                //     color: Theme.of(context).colorScheme.primary,
-                //   ),
-                // ),
                 Container(
                   color: Theme.of(context).colorScheme.primary,
                   width: double.infinity,
                   height: MediaQuery.of(context).size.width * 0.5,
                 ),
-                // ListTile(
-                //   leading:  Icon(Icons.logout,color: Theme.of(context).colorScheme.secondary,),
-                //   title:  Text(
-                //     'Log Out',
-                //     style: Theme.of(context).textTheme.displayLarge!.copyWith( fontSize: 24),
-                //   ),
-                //   onTap: () {},
-                // ),
                 ListTile(
                   leading: Icon(
                     Icons.login,
@@ -185,6 +166,12 @@ class _HomeViewState extends State<HomeView> {
                   ),
                 ),
                 ListTile(
+                  onTap: () {
+                    LocalNotifications.showSimpleNotification(
+                        title: "Simple Notification",
+                        body: "سعر $name وصل الي $price",
+                        payload: "This is simple data");
+                  },
                   leading: Icon(
                     Icons.notifications_none_outlined,
                     color: Theme.of(context).colorScheme.primary,

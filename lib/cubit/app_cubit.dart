@@ -2,14 +2,17 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:meta/meta.dart';
 import 'package:money/pages/crypto/model/crypto_model.dart';
 import 'package:money/pages/crypto/model/stocks_model.dart';
 import 'package:money/pages/crypto/page/crypto_view.dart';
 import 'package:money/pages/gold/model/silver_model.dart';
 import 'package:sqflite/sqflite.dart';
+import '../core/local_notifications.dart';
 import '../core/shared_prefrence.dart';
 import '../core/string_manager.dart';
 import '../pages/currency/model/currency_bank_model.dart';
@@ -51,26 +54,24 @@ class AppCubit extends Cubit<AppState> {
   }
 
   List<GoldModel> goldList = [];
-
   List<CurrencyBankModel> currencyList = [];
   List<CryptoModel> cryptoList = [];
   List<StocksModel> stocksList = [];
   List<CurrencyBlackMarketModel> currencyBlackMarketList = [];
   List<SilverModel> silverList = [];
-
   final StreamController<List<CurrencyBankModel>> bankCurrencyStream =
-      StreamController<List<CurrencyBankModel>>.broadcast();
+  StreamController<List<CurrencyBankModel>>.broadcast();
   final StreamController<List<CurrencyBlackMarketModel>>
-      blackMarketCurrencyStream =
-      StreamController<List<CurrencyBlackMarketModel>>.broadcast();
+  blackMarketCurrencyStream =
+  StreamController<List<CurrencyBlackMarketModel>>.broadcast();
   final StreamController<List<GoldModel>> goldStream =
-      StreamController<List<GoldModel>>.broadcast();
+  StreamController<List<GoldModel>>.broadcast();
   final StreamController<List<SilverModel>> silverStream =
-      StreamController<List<SilverModel>>.broadcast();
+  StreamController<List<SilverModel>>.broadcast();
   final StreamController<List<CryptoModel>> cryptoStream =
-      StreamController<List<CryptoModel>>.broadcast();
+  StreamController<List<CryptoModel>>.broadcast();
   final StreamController<List<StocksModel>> stocksStream =
-      StreamController<List<StocksModel>>.broadcast();
+  StreamController<List<StocksModel>>.broadcast();
 
   void initialFunction() {
     currencyScrollController.addListener(onListenerController);
@@ -82,6 +83,65 @@ class AppCubit extends Cubit<AppState> {
     getBankCurrencyStream();
   }
 
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+  FlutterLocalNotificationsPlugin();
+
+  Future<void> initializeNotifications() async {
+    // Define Android initialization settings
+    const AndroidInitializationSettings initializationSettingsAndroid =
+    AndroidInitializationSettings('coin_money');
+
+    // Define iOS initialization settings
+    final DarwinInitializationSettings initializationSettingsIOS =
+    DarwinInitializationSettings();
+
+    // Define initialization settings
+    final InitializationSettings initializationSettings =
+    InitializationSettings(
+      android: initializationSettingsAndroid,
+      iOS: initializationSettingsIOS,
+    );
+
+    await flutterLocalNotificationsPlugin.initialize(initializationSettings);
+  }
+
+  Future<void> showNotification(
+      FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin,
+      int id,
+      String title,
+      String body, {
+        String payload = "", // Optional data attached to the notification
+      }) async {
+    var androidPlatformChannelSpecifics = const AndroidNotificationDetails(
+      'your_channel_id', // Your unique notification channel id
+      'Your App Name', // Channel title
+      channelDescription: 'Your app description',
+      // Optional channel description
+      icon: 'coin_money',
+      // Notification icon
+      largeIcon: DrawableResourceAndroidBitmap('ic_launcher'),
+      // Large icon displayed on some devices
+      playSound: true,
+      // Play notification sound
+      enableVibration: true,
+      // Enable vibration
+      importance: Importance.max,
+      // Importance of the notification
+      priority: Priority.high,
+      // Priority within the notification category
+      visibility: NotificationVisibility.public, // Notification visibility
+    );
+    var iOSPlatformChannelSpecifics = const DarwinNotificationDetails(
+      // Optional data attached to the notification
+    );
+    var platformChannelSpecifics = NotificationDetails(
+      android: androidPlatformChannelSpecifics,
+      iOS: iOSPlatformChannelSpecifics,
+    );
+    await flutterLocalNotificationsPlugin.show(
+        id, title, body, platformChannelSpecifics);
+  }
+
 /////////////// currency Bank Code
   List<double> extractCurrencyBuyPrices(List<CurrencyPricesModel> pricesList) {
     List<double> buyPrices = [];
@@ -90,11 +150,14 @@ class AppCubit extends Cubit<AppState> {
       buyPrices.add(buyPrice);
     }
     return buyPrices;
-  }  List<MyData> extractCurrencyBuyPricesAndData(List<CurrencyPricesModel> pricesList) {
+  }
+
+  List<MyData> extractCurrencyBuyPricesAndData(
+      List<CurrencyPricesModel> pricesList) {
     List<MyData> buyPrices = [];
     for (var price in pricesList) {
       double buyPrice = double.parse(price.buyPrice!);
-      DateTime dateTime=DateTime.parse(price.scrapedAt!.substring(0, 10));
+      DateTime dateTime = DateTime.parse(price.scrapedAt!.substring(0, 10));
       buyPrices.add(MyData(date: dateTime, price: buyPrice));
     }
     return buyPrices;
@@ -109,7 +172,39 @@ class AppCubit extends Cubit<AppState> {
     // });
     final response = json.decode(AppString.currencyJsons);
     currencyList = [];
-    response.forEach((e) => currencyList.add(CurrencyBankModel.fromJson(e)));
+    response.forEach((e) {
+      currencyList.add(CurrencyBankModel.fromJson(e));
+      if (currencyAlert.isNotEmpty) {
+        currencyAlert.forEach((element) {
+          if (element['name'] == e['name']) {
+            if (element['status'] == AppString.greater) {
+              double savePrice = double.parse(element['price']);
+              double currencyPrice = double.parse(e['current_buy_price']);
+              if (savePrice <= currencyPrice) {
+                //todo notification
+                LocalNotifications.showSimpleNotification(
+                    title: "Coin Money",
+                    body: "سعر ${e['name']} وصل الي $savePrice جنيه",
+                    payload: "This is simple data");
+                 deleteDatabase(id: element['id']);
+              }
+            } else {
+              double savePrice = double.parse(element['price']);
+              double currencyPrice = double.parse(e['current_buy_price']);
+              // showLocalNotification(title:'Coin Money Notification' ,body:'${element['name']} equal ${element['price']}' );
+              if (savePrice >= currencyPrice) {
+                //todo notification
+                LocalNotifications.showSimpleNotification(
+                    title: "Simple Notification",
+                    body: "سعر ${e['name']} وصل الي ${e['price']} جنيه",
+                    payload: "This is simple data");
+                deleteDatabase(id: element['id']);
+              }
+            }
+          }
+        });
+      }
+    });
 
     bankCurrencyStream.sink.add(currencyList);
     //currencyList = response.toList();
@@ -124,7 +219,8 @@ class AppCubit extends Cubit<AppState> {
 
 /////////////// currency Black Market Code
 
-  List<double> extractCurrencyBlackMarketBuyPrices(List<BlackMarketPricesModel> pricesList) {
+  List<double> extractCurrencyBlackMarketBuyPrices(
+      List<BlackMarketPricesModel> pricesList) {
     List<double> buyPrices = [];
     for (var price in pricesList) {
       double buyPrice = double.parse(price.buyPrice!);
@@ -142,7 +238,7 @@ class AppCubit extends Cubit<AppState> {
     // }).catchError((e) {
     //   print(e);
     // });
-      final response = json.decode(AppString.blackMarketJson);
+    final response = json.decode(AppString.blackMarketJson);
     currencyBlackMarketList = [];
     response.forEach((e) =>
         currencyBlackMarketList.add(CurrencyBlackMarketModel.fromJson(e)));
@@ -229,7 +325,7 @@ class AppCubit extends Cubit<AppState> {
     // }).catchError((e) {
     //   print(e);
     // });
-     final response = json.decode(AppString.cryptoJsons);
+    final response = json.decode(AppString.cryptoJsons);
     cryptoList = [];
     response.forEach((e) => cryptoList.add(CryptoModel.fromJson(e)));
     cryptoStream.add(cryptoList);
@@ -276,9 +372,13 @@ class AppCubit extends Cubit<AppState> {
     if (duration.inDays > 0) {
       return '${duration.inDays} ${duration.inDays == 1 ? 'يوم' : 'أيام'} مضت';
     } else if (duration.inHours > 0) {
-      return '${duration.inHours} ${duration.inHours == 1 ? 'ساعة' : 'ساعات'} مضت';
+      return '${duration.inHours} ${duration.inHours == 1
+          ? 'ساعة'
+          : 'ساعات'} مضت';
     } else if (duration.inMinutes > 0) {
-      return '${duration.inMinutes} دقيقة${duration.inMinutes == 1 ? 'دقيقة' : 'دقائق'} مضت';
+      return '${duration.inMinutes} دقيقة${duration.inMinutes == 1
+          ? 'دقيقة'
+          : 'دقائق'} مضت';
     } else {
       return 'الآن';
     }
@@ -295,8 +395,8 @@ class AppCubit extends Cubit<AppState> {
     emit(ControllerChangeState());
   }
 
-  double scrollAnimation(
-      int index, double itemSize, ScrollController scrollController) {
+  double scrollAnimation(int index, double itemSize,
+      ScrollController scrollController) {
     final itemOffset = index * itemSize;
     final different = scrollController.offset - itemOffset;
     final percent = 1 - (different / (itemSize / 2));
@@ -332,14 +432,9 @@ class AppCubit extends Cubit<AppState> {
       'alert.db',
       version: 1,
       onCreate: (db, version) {
-        // id integer
-        // title String
-        // time String
-        // data String
-        // status String
         db
             .execute(
-                'CREATE TABLE alert (id INTEGER PRIMARY KEY,category TEXT,name TEXT,price TEXT,status TEXT)')
+            'CREATE TABLE alert (id INTEGER PRIMARY KEY,category TEXT,name TEXT,price TEXT,status TEXT)')
             .then((value) {
           print('table create');
         }).catchError((error) {
@@ -390,24 +485,35 @@ class AppCubit extends Cubit<AppState> {
     required String status,
   }) async {
     return await database.transaction(
-      (txn) => txn
-          .rawInsert(
-              'INSERT INTO tasks(name,category,price,status)VALUES("$name", "$category","$price","$status" )')
-          .then(
-        (value) {
-          print('$value Insert Successfully');
-          emit(InsertDatabaseState());
-          getFromDatabase(database);
-        },
-      ).catchError(
-        (error) {
-          print('Error When i Insert new Record $error');
-        },
-      ),
+          (txn) =>
+          txn.rawInsert(
+              'INSERT INTO alert(name,category,price,status)VALUES("$name", "$category","$price","$status" )')
+              .then(
+                (value) {
+              print('$value Insert Successfully');
+              emit(InsertDatabaseState());
+              getFromDatabase(database);
+            },
+          ).catchError(
+                (error) {
+              print('Error When i Insert new Record $error');
+            },
+          ),
     );
   }
-}
 
+
+  Future deleteDatabase({
+    required int id,
+  }) async {
+    return await database.rawUpdate('DELETE FROM alert WHERE id = ?',
+        [id]).then((value) {
+      print('delete successfully');
+      getFromDatabase(database);
+      emit(UpdateDatabaseState());
+    });
+  }
+}
 //   Stream<List<CurrencyBankModel>> getCurrencyBankData() async* {
 //     while (true) {
 //       // Wait for some time before making the next API call

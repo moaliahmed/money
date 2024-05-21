@@ -1,12 +1,14 @@
 import 'package:fl_chart/fl_chart.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:money/cubit/app_cubit.dart';
+import '../../../core/string_manager.dart';
 import '../model/currency_bank_model.dart';
 import 'head_card_component.dart';
+import 'dart:ui' as ui;
 
-class PartOne extends StatelessWidget {
-  PartOne({
+class SelectCurrencyCoin extends StatefulWidget {
+  SelectCurrencyCoin({
     super.key,
     required this.dataList,
     required this.name,
@@ -14,250 +16,399 @@ class PartOne extends StatelessWidget {
     required this.scrapedAt,
     required this.currentSellPrice,
     required this.currentBuyPrice,
+    required this.currentSellRateChanges,
+    required this.currentBuyRateChanges,
   });
 
-  List<Color> gradientColors = [
-    const Color(0xffe68823),
-    const Color(0xffe68823),
-    //  Color(0xff007200),
-    //Color(0xff008000),
-  ];
   List<CurrencyPricesModel> dataList = [];
-  late double graphIndex;
 
   final String name;
   final String image;
   final String scrapedAt;
   final String currentSellPrice;
   final String currentBuyPrice;
+  final double currentSellRateChanges;
+  final double currentBuyRateChanges;
+  final TextEditingController textController = TextEditingController();
+
+  String getState({required String inputText, required String currencyText}) {
+    double inputPrice = double.parse(inputText);
+    double currencyPrice = double.parse(currencyText);
+    if (inputPrice > currencyPrice) {
+      return AppString.greater;
+    } else {
+      return AppString.smaller;
+    }
+  }
+
+  @override
+  State<SelectCurrencyCoin> createState() => _SelectCurrencyCoinState();
+}
+
+class _SelectCurrencyCoinState extends State<SelectCurrencyCoin> {
+  List<Color> gradientColors = [
+    const Color(0xffe68823),
+    const Color(0xffe68823),
+    //  Color(0xff007200),
+    //Color(0xff008000),
+  ];
+
+  double graphIndex = -1;
 
   @override
   Widget build(BuildContext context) {
-    graphIndex = 0;
-    print(dataList[0]);
-    List<FlSpot> spots = dataList
-        .map((point) => FlSpot(graphIndex++, double.parse(point.buyPrice!)))
+    ui.TextDirection direction = ui.TextDirection.ltr;
+
+    double listIndex = 0;
+
+    List<FlSpot> spots = widget.dataList
+        .map((point) => FlSpot(listIndex++, double.parse(point.buyPrice!)))
         .toList();
-    print(spots);
 
     double myHeight = MediaQuery.of(context).size.height;
     double myWidth = MediaQuery.of(context).size.width;
-    return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.background,
-      appBar: AppBar(
-        iconTheme: IconThemeData(color: Theme.of(context).colorScheme.onSecondary),
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        title: Image.asset(
-          'assets/images/Coinmoney.png',
-          color: Theme.of(context).colorScheme.onSecondary.withOpacity(.7),
-        ),
-        elevation: 0,
-      ),
-      body: SafeArea(
-        child: Column(
-          children: [
-            SizedBox(
-              height: 145,
-              child: headCardComponent(context),
+    return BlocConsumer<AppCubit, AppState>(
+      listener: (context, state) {},
+      builder: (context, state) {
+        var cubit = AppCubit.get(context);
+        return Scaffold(
+          backgroundColor: Theme.of(context).colorScheme.background,
+          appBar: AppBar(
+            iconTheme:
+                IconThemeData(color: Theme.of(context).colorScheme.onSecondary),
+            backgroundColor: Theme.of(context).colorScheme.primary,
+            title: Image.asset(
+              'assets/images/Coinmoney.png',
+              color: Theme.of(context).colorScheme.onSecondary.withOpacity(.7),
             ),
-            Container(
-              height: myHeight * .15,
-              width: myWidth,
-              //padding: const EdgeInsets.symmetric(horizontal: 9),
-              child: Directionality(
-                textDirection: TextDirection.rtl,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    Row(
+            elevation: 0,
+          ),
+          body: SafeArea(
+            child: Column(
+              children: [
+                SizedBox(
+                  height: 145,
+                  child: headCardComponent(context,
+                      name: widget.name,
+                      image: widget.image,
+                      sellPrice: widget.currentSellPrice,
+                      buyPrice: widget.currentBuyPrice,
+                      lastUpdate: widget.scrapedAt),
+                ),
+                SizedBox(
+                  height: myHeight * .15,
+                  width: myWidth,
+                  //padding: const EdgeInsets.symmetric(horizontal: 9),
+                  child: Directionality(
+                    textDirection: TextDirection.rtl,
+                    child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
                         Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
-                            Text(
-                              'سعر البيع : ',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyLarge!
-                                  .copyWith(fontSize: 26),
-                            ),
-                            Column(
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                    // currentBuyPrice.toStringAsFixed(2),
-                                    '47,7',
-                                    overflow: TextOverflow.ellipsis,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyLarge!
-                                        .copyWith(fontSize: 24)),
-                                Row(
+                                  'سعر البيع : ',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyLarge!
+                                      .copyWith(fontSize: 26),
+                                ),
+                                Column(
                                   children: [
                                     Text(
-                                      // currentBuyPriceChange.toStringAsFixed(3),
-                                      ',2',
-                                      style: TextStyle(
-                                          // color: currentBuyPriceChange >= 0
-                                          //     ? Colors.green
-                                          //     : Colors.red,
-                                          fontSize: 18,
-                                          color: Colors.green),
-                                    ),
-                                    // currentBuyPriceChange >= 0?
-                                    const Icon(
-                                      Icons.arrow_drop_up,
-                                      size: 18,
-                                      color: Colors.green,
+                                        // currentBuyPrice.toStringAsFixed(2),
+                                        graphIndex != -1
+                                            ? widget
+                                                .dataList[graphIndex.toInt()]
+                                                .buyPrice
+                                                .toString()
+                                            : widget.currentBuyPrice,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyLarge!
+                                            .copyWith(fontSize: 24)),
+                                    Row(
+                                      children: [
+                                        Text(
+                                          graphIndex != -1
+                                              ? widget
+                                                  .dataList[graphIndex.toInt()]
+                                                  .buyRateChange
+                                                  .toString()
+                                              : widget.currentBuyRateChanges
+                                                  .toString(),
+                                          textDirection: direction,
+                                          style: TextStyle(
+                                            color: graphIndex != -1
+                                                ? double.parse(widget
+                                                            .dataList[graphIndex
+                                                                .toInt()]
+                                                            .buyRateChange!) >=
+                                                        0
+                                                    ? Colors.green
+                                                    : Colors.red
+                                                : widget.currentBuyRateChanges >=
+                                                        0
+                                                    ? Colors.green
+                                                    : Colors.red,
+                                            fontSize: 18,
+                                          ),
+                                        ),
+                                        // currentBuyPriceChange >= 0?
+                                        graphIndex != -1
+                                            ? double.parse(widget
+                                                        .dataList[
+                                                            graphIndex.toInt()]
+                                                        .buyRateChange!) >=
+                                                    0
+                                                ? const Icon(
+                                                    Icons.arrow_drop_up,
+                                                    size: 18,
+                                                    color: Colors.green,
+                                                  )
+                                                : const Icon(
+                                                    Icons.arrow_drop_down,
+                                                    size: 18,
+                                                    color: Colors.red,
+                                                  )
+                                            : widget.currentBuyRateChanges >= 0
+                                                ? const Icon(
+                                                    Icons.arrow_drop_up,
+                                                    size: 18,
+                                                    color: Colors.green,
+                                                  )
+                                                : const Icon(
+                                                    Icons.arrow_drop_down,
+                                                    size: 18,
+                                                    color: Colors.red,
+                                                  )
+                                      ],
                                     )
                                   ],
                                 )
                               ],
-                            )
+                            ),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'سعر الشراء : ',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyLarge!
+                                      .copyWith(fontSize: 26),
+                                ),
+                                Column(
+                                  children: [
+                                    Text(
+                                        graphIndex != -1
+                                            ? widget
+                                                .dataList[graphIndex.toInt()]
+                                                .sellPrice
+                                                .toString()
+                                            : widget.currentSellPrice,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyLarge!
+                                            .copyWith(fontSize: 24)),
+                                    Row(
+                                      children: [
+                                        Text(
+                                          graphIndex != -1
+                                              ? widget
+                                                  .dataList[graphIndex.toInt()]
+                                                  .sellRateChange
+                                                  .toString()
+                                              : widget.currentBuyRateChanges
+                                                  .toString(),
+                                          textDirection: direction,
+                                          style: TextStyle(
+                                            color: graphIndex != -1
+                                                ? double.parse(widget
+                                                            .dataList[graphIndex
+                                                                .toInt()]
+                                                            .sellRateChange!) >=
+                                                        0
+                                                    ? Colors.green
+                                                    : Colors.red
+                                                : widget.currentSellRateChanges >=
+                                                        0
+                                                    ? Colors.green
+                                                    : Colors.red,
+                                            fontSize: 18,
+                                          ),
+                                        ),
+                                        // currentBuyPriceChange >= 0?
+                                        graphIndex != -1
+                                            ? double.parse(widget
+                                                        .dataList[
+                                                            graphIndex.toInt()]
+                                                        .sellRateChange!) >=
+                                                    0
+                                                ? const Icon(
+                                                    Icons.arrow_drop_up,
+                                                    size: 18,
+                                                    color: Colors.green,
+                                                  )
+                                                : const Icon(
+                                                    Icons.arrow_drop_down,
+                                                    size: 18,
+                                                    color: Colors.red,
+                                                  )
+                                            : widget.currentSellRateChanges >= 0
+                                                ? const Icon(
+                                                    Icons.arrow_drop_up,
+                                                    size: 18,
+                                                    color: Colors.green,
+                                                  )
+                                                : const Icon(
+                                                    Icons.arrow_drop_down,
+                                                    size: 18,
+                                                    color: Colors.red,
+                                                  )
+                                      ],
+                                    )
+                                  ],
+                                )
+                              ],
+                            ),
                           ],
                         ),
                         Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+                            SizedBox(width: myWidth * .07),
                             Text(
-                              'سعر الشراء : ',
+                              'التاريخ : ',
                               style: Theme.of(context)
                                   .textTheme
                                   .bodyLarge!
-                                  .copyWith(fontSize: 26),
+                                  .copyWith(fontSize: 18),
                             ),
-                            Column(
-                              children: [
-                                Text(
-                                    // currentBuyPrice.toStringAsFixed(2),
-                                    '47,7',
-                                    overflow: TextOverflow.ellipsis,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyLarge!
-                                        .copyWith(fontSize: 24)),
-                                Row(
-                                  children: [
-                                    Text(
-                                      // currentBuyPriceChange.toStringAsFixed(3),
-                                      ',2',
-                                      style: TextStyle(
-                                          // color: currentBuyPriceChange >= 0
-                                          //     ? Colors.green
-                                          //     : Colors.red,
-                                          fontSize: 18,
-                                          color: Colors.green),
-                                    ),
-                                    // currentBuyPriceChange >= 0?
-                                    const Icon(
-                                      Icons.arrow_drop_up,
-                                      size: 18,
-                                      color: Colors.green,
-                                    )
-                                  ],
-                                )
-                              ],
-                            )
+                            Text(
+                              graphIndex != -1
+                                  ? widget
+                                      .dataList[graphIndex.toInt()].scrapedAt
+                                      .toString()
+                                      .substring(0, 10)
+                                  : widget.scrapedAt,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .displayLarge!
+                                  .copyWith(fontSize: 16),
+                            ),
                           ],
                         ),
                       ],
                     ),
-                    Row(
-                      children: [
-                        SizedBox(width: myWidth * .07),
-                        Text(
-                          'التاريخ : ',
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyLarge!
-                              .copyWith(fontSize: 18),
-                        ),
-                        Text(
-                          '2024-05-08',
-                          style: Theme.of(context)
-                              .textTheme
-                              .displayLarge!
-                              .copyWith(fontSize: 16),
-                        ),
-                      ],
-                    ),
-                  ],
+                  ),
                 ),
-              ),
-            ),SizedBox(height: myHeight*.03),
-            Expanded(
-              // height: myHeight * .3,
-              child: LineChart(
-                mainData(spots),
-              ),
-            ),
+                SizedBox(height: myHeight * .03),
+                Expanded(
+                  // height: myHeight * .3,
+                  child: LineChart(
+                    mainData(spots),
+                  ),
+                ),
 
-            SizedBox(
-              height: myHeight * 0.1,
-              width: myWidth,
-              // color: Colors.amber,
-              child: Column(
-                children: [
-                  // Divider(color: Theme.of(context).colorScheme.primary,),
-                  SizedBox(height: myHeight * 0.01),
-                  Row(
+                SizedBox(
+                  height: myHeight * 0.1,
+                  width: myWidth,
+                  // color: Colors.amber,
+                  child: Column(
                     children: [
-                      SizedBox(width: myWidth * 0.05),
-                      Expanded(
-                        flex: 5,
-                        child: InkWell(
-                          onTap: () {
-                            // Todo write function to add crypto cone to favorite list
-                          },
-                          child: Container(
-                            padding: EdgeInsets.symmetric(
-                                vertical: myHeight * 0.015),
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(50),
-                                color: const Color(0xffFBC700)),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  Icons.add,
-                                  color: Colors.white,
-                                  size: myHeight * 0.02,
+                      // Divider(color: Theme.of(context).colorScheme.primary,),
+                      SizedBox(height: myHeight * 0.01),
+                      Row(
+                        children: [
+                          SizedBox(width: myWidth * 0.05),
+                          Expanded(
+                            flex: 5,
+                            child: InkWell(
+                              onTap: () {
+                                showDialog<String>(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: const Text('Save Value'),
+                                      content: TextField(
+                                        controller: widget.textController,
+                                        decoration: const InputDecoration(
+                                            hintText: 'Enter value to save'),
+                                        keyboardType: TextInputType.number,
+                                      ),
+                                      actions: <Widget>[
+                                        TextButton(
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                            cubit
+                                                .insertDatabase(
+                                                    name: widget.name,
+                                                    category:
+                                                        AppString.currencyAlert,
+                                                    price: widget
+                                                        .textController.text,
+                                                    status: widget.getState(
+                                                        inputText: widget
+                                                            .textController
+                                                            .text,
+                                                        currencyText: widget
+                                                            .currentBuyPrice))
+                                                .then((value) => widget
+                                                    .textController
+                                                    .clear());
+                                          },
+                                          child: const Text('Save'),
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
+                              },
+                              child: Container(
+                                padding: EdgeInsets.symmetric(
+                                    vertical: myHeight * 0.015),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(50),
+                                  color: Color(0x99e68823),
                                 ),
-                                const Text(
-                                  'Add to portfolio',
-                                  style: TextStyle(fontSize: 20),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Image.asset(
+                                      'assets/icons/3.1.png',
+                                      height: myHeight * 0.03,
+                                      color: Colors.black,
+                                    ),
+                                    SizedBox(
+                                      width: myWidth * .04,
+                                    ),
+                                    const Text(
+                                      'Add to portfolio',
+                                      style: TextStyle(fontSize: 20),
+                                    ),
+                                  ],
                                 ),
-                              ],
+                              ),
                             ),
                           ),
-                        ),
-                      ),
-                      SizedBox(width: myWidth * 0.05),
-                      Expanded(
-                        flex: 2,
-                        child: Container(
-                          padding:
-                              EdgeInsets.symmetric(vertical: myHeight * 0.012),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(50),
-                              color: Colors.grey.withOpacity(0.2)),
-                          child: Image.asset(
-                            'assets/icons/3.1.png',
-                            height: myHeight * 0.03,
-                            color: Colors.black,
-                          ),
-                        ),
-                      ),
-                      SizedBox(width: myWidth * 0.05),
+                          SizedBox(width: myWidth * 0.05),
+                        ],
+                      )
                     ],
-                  )
-                ],
-              ),
-            )
-            //  LineChartSample2()
-          ],
-        ),
-      ),
+                  ),
+                )
+                //  LineChartSample2()
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 
@@ -268,7 +419,12 @@ class PartOne extends StatelessWidget {
           final res = response?.lineBarSpots;
           final res1 = event as FlTouchEvent;
           if (res != null && res.isNotEmpty) {
-            print('event :${res1} , result : ${res[0].x}');
+            setState(() {
+              graphIndex = res[0].x;
+            });
+
+            print(graphIndex);
+            // print('event :${res1} , result : ${res[0].x}');
             // if (event is FlTapUpEvent) {
             //   if (response != null && response.lineBarSpots != null) {
             //     print(event.details);

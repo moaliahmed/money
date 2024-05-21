@@ -8,7 +8,6 @@ import '../../../core/assets_manager.dart';
 import 'currency_black_market_model.dart';
 
 class BlackMarketPageView extends StatefulWidget {
-  
   const BlackMarketPageView({
     super.key,
   });
@@ -34,25 +33,25 @@ class _BlackMarketPageViewState extends State<BlackMarketPageView>
                 case ConnectionState.waiting:
                   return cubit.isDark
                       ? Center(
-                      child: SizedBox(
-                          height: MediaQuery.of(context).size.height * .2,
-                          child:
-                          Lottie.asset(ImageAssets.loadingDarkLottie)))
+                          child: SizedBox(
+                              height: MediaQuery.of(context).size.height * .2,
+                              child:
+                                  Lottie.asset(ImageAssets.loadingDarkLottie)))
                       : Center(
-                      child: SizedBox(
-                          height: MediaQuery.of(context).size.height * .2,
-                          child: Lottie.asset(
-                              ImageAssets.loadingLightLottie)));
+                          child: SizedBox(
+                              height: MediaQuery.of(context).size.height * .2,
+                              child: Lottie.asset(
+                                  ImageAssets.loadingLightLottie)));
                 default:
                   if (snapshot.hasError) {
-                    return Center(
+                    return const Center(
                       child: Text('Some Error Occurred'),
                     );
                   } else {
                     return Column(
                       children: [
                         Container(
-                          padding: EdgeInsets.symmetric(
+                          padding: const EdgeInsets.symmetric(
                               horizontal: 20, vertical: 10),
                           child: Row(
                             children: [
@@ -61,14 +60,17 @@ class _BlackMarketPageViewState extends State<BlackMarketPageView>
                                 child: Row(
                                   children: [
                                     SizedBox(
-                                        height: 45,
-                                        width: 40,
-                                        child: Lottie.asset(
-                                          ImageAssets.arrowLottieRight,
-                                        )),
+                                      height: 45,
+                                      width: 40,
+                                      child: Lottie.asset(
+                                          ImageAssets.arrowLottieRight),
+                                    ),
                                     Text(
                                       'عملات البنك',
-                                      style: Theme.of(context).textTheme.displayLarge!.copyWith(fontSize: 18),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .displayLarge!
+                                          .copyWith(fontSize: 18),
                                     ),
                                   ],
                                 ),
@@ -89,7 +91,7 @@ class _BlackMarketPageViewState extends State<BlackMarketPageView>
                         ),
                         Expanded(
                           child: ListView.separated(
-                          //  controller: cubit.blackMarketScrollController,
+                            //  controller: cubit.blackMarketScrollController,
                             separatorBuilder: (context, index) {
                               return const Divider(
                                 indent: 15,
@@ -104,12 +106,14 @@ class _BlackMarketPageViewState extends State<BlackMarketPageView>
                               return InkWell(
                                 onTap: () {},
                                 child: BlackMarketItemComponent(
-                                  image: cubit.currencyBlackMarketList[index].image!,
+                                  image: cubit
+                                      .currencyBlackMarketList[index].image!,
                                   currentBuyPrice: double.parse(
                                       snapshot.data![index].currentBuyPrice!),
                                   currentSellPrice: double.parse(
                                       snapshot.data![index].currentSellPrice!),
-                                  name:cubit.currencyBlackMarketList[index].name!,
+                                  name: cubit
+                                      .currencyBlackMarketList[index].name!,
                                   currentBuyPriceChange: snapshot
                                       .data![index].currentBuyPriceColor!,
                                   price:

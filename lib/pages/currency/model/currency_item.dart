@@ -41,7 +41,7 @@ class CurrencyItemComponent extends StatelessWidget {
             Expanded(
               flex: 1,
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     name,

@@ -108,7 +108,8 @@ class _BankPageViewState extends State<BankPageView>
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) => PartOne(
+                                        builder: (context) =>
+                                            SelectCurrencyCoin(
                                           name: cubit.currencyList[index].name!,
                                           image:
                                               cubit.currencyList[index].image!,
@@ -118,8 +119,14 @@ class _BankPageViewState extends State<BankPageView>
                                               .data![index].currentSellPrice!,
                                           dataList:
                                               snapshot.data![index].prices!,
-                                          scrapedAt: cubit
-                                              .currencyList[index].scrapedAt!,
+                                          scrapedAt: cubit.returnRelativeTime(
+                                              snapshot.data![0].scrapedAt!),
+                                          currentSellRateChanges: double.parse(
+                                              snapshot.data![index]
+                                                  .currentSellPriceChange!),
+                                          currentBuyRateChanges: double.parse(
+                                              cubit.currencyList[index]
+                                                  .currentBuyPriceChange!),
                                         ),
                                       ));
                                 },

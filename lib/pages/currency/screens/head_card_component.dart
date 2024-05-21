@@ -1,9 +1,18 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:gap/gap.dart';
 
 import '../../../core/color_manger.dart';
 
-Widget headCardComponent(context) {
+Widget headCardComponent(
+  context, {
+  required String name,
+  required String image,
+  required String buyPrice,
+  required String sellPrice,
+  required String lastUpdate,
+}) {
   return Stack(
     children: [
       Column(
@@ -30,7 +39,7 @@ Widget headCardComponent(context) {
           decoration: BoxDecoration(
             boxShadow: [
               BoxShadow(
-                color: ColorManager.boxShadow,
+                color: Colors.white.withOpacity(.3),
                 offset: const Offset(0, 6),
                 blurRadius: 12,
                 spreadRadius: 3,
@@ -38,7 +47,7 @@ Widget headCardComponent(context) {
             ],
             border: Border.all(color: Colors.black45),
             borderRadius: BorderRadius.circular(15),
-            color: Colors.white.withOpacity(.95),
+            color: Theme.of(context).colorScheme.background.withOpacity(.9),
           ),
           child: Padding(
             padding: const EdgeInsets.all(15.0),
@@ -50,17 +59,12 @@ Widget headCardComponent(context) {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      CircleAvatar(child: Image.asset('assets/images/egp.png')),
+                      CircleAvatar(child: SvgPicture.network(image)),
                       Text(
-                        //todo change text theme
-                        'US Dollar/USD',
-                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                            color: Theme.of(context).colorScheme.onSecondary),
-                      ),
-                      const Icon(
-                        Icons.arrow_downward_outlined,
-                        size: 15,
-                      )
+                          //todo change text theme
+                          name,
+                          overflow: TextOverflow.clip,
+                          style: Theme.of(context).textTheme.bodyLarge),
                     ],
                   ),
                 ),
@@ -70,56 +74,35 @@ Widget headCardComponent(context) {
                   children: [
                     Column(
                       children: [
-                        Text(
-                          'بيع',
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyLarge
-                              ?.copyWith(
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .onSecondary),
-                        ),
-                        Text(
-                          'EGP 30.93',
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyLarge
-                              ?.copyWith(
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .onSecondary),
-                        ),
+                        Text('بيع',
+                            style: Theme.of(context).textTheme.displayLarge),
+                        Text('EGP $buyPrice',
+                            overflow: TextOverflow.ellipsis,
+                            style: Theme.of(context).textTheme.headlineLarge),
                       ],
                     ),
                     SizedBox(
                       height: 40,
                       child: VerticalDivider(
                         thickness: 1,
-                        color: Colors.black,
+                        color: Theme.of(context).colorScheme.onSurface,
                       ),
                     ),
                     Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+
                       children: [
                         Text(
                           'اخر تحديث',
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyLarge
-                              ?.copyWith(
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .onSecondary),
+                          style: Theme.of(context).textTheme.headlineLarge,
                         ),
-                        Text(
-                          '5 Minutes ago',
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyLarge
-                              ?.copyWith(
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .onSecondary),
+                        Directionality(
+                          textDirection: TextDirection.rtl,
+                          child: Text(
+                            lastUpdate,
+                            style: Theme.of(context).textTheme.displayLarge,
+
+                          ),
                         ),
                       ],
                     ),
@@ -127,30 +110,19 @@ Widget headCardComponent(context) {
                       height: 40,
                       child: VerticalDivider(
                         thickness: 1,
-                        color: Colors.black,
+                        color: Theme.of(context).colorScheme.onSurface,
                       ),
                     ),
                     Column(
                       children: [
                         Text(
                           'شراء',
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyLarge
-                              ?.copyWith(
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .onSecondary),
+                          style: Theme.of(context).textTheme.displayLarge,
                         ),
                         Text(
-                          'EGP 50.80',
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyLarge
-                              ?.copyWith(
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .onSecondary),
+                          'EGP $sellPrice',
+                          overflow: TextOverflow.ellipsis,
+                          style: Theme.of(context).textTheme.headlineLarge,
                         ),
                       ],
                     ),
