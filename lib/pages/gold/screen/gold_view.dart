@@ -31,7 +31,6 @@ class GoldView extends StatelessWidget {
                       ),
                     ),
                     child: PageView(
-
                       children: [
                         GoldPageView(),
                         SilverPageView(),]

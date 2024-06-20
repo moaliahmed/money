@@ -11,6 +11,8 @@ import '../../core/constants_manager.dart';
 import '../../core/local_notifications.dart';
 import '../gold/screen/gold_view.dart';
 import '../news/presentation/screans/news_layout.dart';
+import '../prediction/page/currency_ai_pageview.dart';
+import '../prediction/page/prediction_page.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -22,14 +24,15 @@ class HomeView extends StatefulWidget {
 class _HomeViewState extends State<HomeView> {
   int currentIndex = 0;
   final List<Widget> _view = [
-   const CurrencyView(),
-   const GoldView(),
-   const CryptoView(),
+    const CurrencyView(),
+    const GoldView(),
+    const CryptoView(),
+    const PredictionPage(),
     const NewsLayout()
     //SettingView()
   ];
-  String name='الدولار الامريكي';
-  String price ='50';
+  String name = 'الدولار الامريكي';
+  String price = '50';
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +66,7 @@ class _HomeViewState extends State<HomeView> {
                 )
               ],
             ),
-            actions:const [
+            actions: const [
               SizedBox(
                 width: 25,
               )
@@ -88,12 +91,12 @@ class _HomeViewState extends State<HomeView> {
             color: Theme.of(context).colorScheme.primary,
             items: [
               Image.asset(
-                ImageAssets.homeIcon2,
+                ImageAssets.homeIcon1,
                 height: myHeight * .03,
                 color: Theme.of(context).colorScheme.onSecondary,
               ),
               Image.asset(
-                ImageAssets.goldIcon2,
+                ImageAssets.goldIcon1,
                 height: myHeight * .035,
                 color: Theme.of(context).colorScheme.onSecondary,
               ),
@@ -103,7 +106,12 @@ class _HomeViewState extends State<HomeView> {
                 color: Theme.of(context).colorScheme.onSecondary,
               ),
               Image.asset(
-                ImageAssets.newsIcon,
+                ImageAssets.predictiveIcon,
+                height: myHeight * .03,
+                color: Theme.of(context).colorScheme.onSecondary,
+              ),
+              Image.asset(
+                ImageAssets.newsIcon1,
                 height: myHeight * .03,
                 color: Theme.of(context).colorScheme.onSecondary,
               ),
@@ -137,11 +145,11 @@ class _HomeViewState extends State<HomeView> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) =>const SignInView(),
+                          builder: (context) => const SignInView(),
                         ));
                   },
                 ),
-              const  Divider(indent: 40, endIndent: 30),
+                const Divider(indent: 40, endIndent: 30),
                 ListTile(
                   leading: Icon(
                     Icons.brightness_4_outlined,
@@ -158,7 +166,7 @@ class _HomeViewState extends State<HomeView> {
                     activeColor: Colors.white,
                     activeTrackColor: Theme.of(context).colorScheme.primary,
                     inactiveThumbColor: Colors.white,
-                    inactiveTrackColor:Theme.of(context).colorScheme.primary ,
+                    inactiveTrackColor: Theme.of(context).colorScheme.primary,
                     onChanged: (value) {
                       cubit.changeAppMode();
                     },
@@ -203,7 +211,6 @@ class _HomeViewState extends State<HomeView> {
                     color: Theme.of(context).colorScheme.primary,
                   ),
                 ),
-
                 ListTile(
                   leading: Icon(Icons.contact_support,
                       color: Theme.of(context).colorScheme.primary),
@@ -240,71 +247,3 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 }
-/*
-  BottomNavigationBar(
-        currentIndex: currentIndex,
-        showSelectedLabels: false,
-        showUnselectedLabels: false,
-       // backgroundColor: ColorManager.white,
-        unselectedIconTheme: const IconThemeData(size: 39),
-        selectedIconTheme: const IconThemeData(size: 39),
-        onTap: (value) {
-          currentIndex = value;
-          setState(() {});
-        },
-        items: [
-          BottomNavigationBarItem(
-            label: '',
-            icon: Image.asset(
-              ImageAssets.homeIcon1,
-              height: myHeight * .03,
-              color: ColorManager.grey,
-            ),
-            activeIcon: Image.asset(
-              ImageAssets.homeIcon2,
-              height: myHeight * .03,
-              color: ColorManager.primary,
-            ),
-          ),
-          BottomNavigationBarItem(
-            label: '',
-            icon: Image.asset(
-              ImageAssets.goldIcon1,
-              height: myHeight * .035,
-              color: ColorManager.grey,
-            ),
-            activeIcon: Image.asset(
-              ImageAssets.goldIcon2,
-              height: myHeight * .035,
-              color: ColorManager.primary,
-            ),
-          ),
-          // BottomNavigationBarItem(
-          //   label: '',
-          //   icon: Image.asset(
-          //     ImageAssets.trendIcon1,
-          //     height: myHeight * .03,
-          //     color: ColorManager.grey,
-          //   ),
-          //   activeIcon: Image.asset(
-          //     ImageAssets.trendIcon2,
-          //     height: myHeight * .03,
-          //     color: ColorManager.primary,
-          //   ),
-          // ),
-          BottomNavigationBarItem(
-            label: '',
-            icon: Image.asset(
-              ImageAssets.profileIcon1,
-              height: myHeight * .03,
-              color: ColorManager.grey,
-            ),
-            activeIcon: Image.asset(
-              ImageAssets.profileIcon2,
-              height: myHeight * .03,
-              color: ColorManager.primary,
-            ),
-          ),
-        ],
-      ),
- */

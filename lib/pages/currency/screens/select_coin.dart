@@ -1,5 +1,7 @@
 import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:money/cubit/app_cubit.dart';
 import '../../../core/string_manager.dart';
@@ -25,8 +27,8 @@ class SelectCurrencyCoin extends StatefulWidget {
   final String name;
   final String image;
   final String scrapedAt;
-  final String currentSellPrice;
-  final String currentBuyPrice;
+  final double currentSellPrice;
+  final double currentBuyPrice;
   final double currentSellRateChanges;
   final double currentBuyRateChanges;
   final TextEditingController textController = TextEditingController();
@@ -62,7 +64,7 @@ class _SelectCurrencyCoinState extends State<SelectCurrencyCoin> {
     double listIndex = 0;
 
     List<FlSpot> spots = widget.dataList
-        .map((point) => FlSpot(listIndex++, double.parse(point.buyPrice!)))
+        .map((point) => FlSpot(listIndex++, point.buyPrice!))
         .toList();
 
     double myHeight = MediaQuery.of(context).size.height;
@@ -91,8 +93,8 @@ class _SelectCurrencyCoinState extends State<SelectCurrencyCoin> {
                   child: headCardComponent(context,
                       name: widget.name,
                       image: widget.image,
-                      sellPrice: widget.currentSellPrice,
-                      buyPrice: widget.currentBuyPrice,
+                      sellPrice: widget.currentSellPrice.toString(),
+                      buyPrice: widget.currentBuyPrice.toString(),
                       lastUpdate: widget.scrapedAt),
                 ),
                 SizedBox(
@@ -124,9 +126,10 @@ class _SelectCurrencyCoinState extends State<SelectCurrencyCoin> {
                                         graphIndex != -1
                                             ? widget
                                                 .dataList[graphIndex.toInt()]
-                                                .buyPrice
-                                                .toString()
-                                            : widget.currentBuyPrice,
+                                                .buyPrice!
+                                                .toStringAsFixed(2)
+                                            : widget.currentBuyPrice
+                                                .toStringAsFixed(2),
                                         overflow: TextOverflow.ellipsis,
                                         style: Theme.of(context)
                                             .textTheme
@@ -138,17 +141,17 @@ class _SelectCurrencyCoinState extends State<SelectCurrencyCoin> {
                                           graphIndex != -1
                                               ? widget
                                                   .dataList[graphIndex.toInt()]
-                                                  .buyRateChange
-                                                  .toString()
+                                                  .buyRateChange!
+                                                  .toStringAsFixed(2)
                                               : widget.currentBuyRateChanges
                                                   .toString(),
                                           textDirection: direction,
                                           style: TextStyle(
                                             color: graphIndex != -1
-                                                ? double.parse(widget
+                                                ? widget
                                                             .dataList[graphIndex
                                                                 .toInt()]
-                                                            .buyRateChange!) >=
+                                                            .buyRateChange! >=
                                                         0
                                                     ? Colors.green
                                                     : Colors.red
@@ -161,10 +164,10 @@ class _SelectCurrencyCoinState extends State<SelectCurrencyCoin> {
                                         ),
                                         // currentBuyPriceChange >= 0?
                                         graphIndex != -1
-                                            ? double.parse(widget
+                                            ? widget
                                                         .dataList[
                                                             graphIndex.toInt()]
-                                                        .buyRateChange!) >=
+                                                        .buyRateChange! >=
                                                     0
                                                 ? const Icon(
                                                     Icons.arrow_drop_up,
@@ -209,9 +212,10 @@ class _SelectCurrencyCoinState extends State<SelectCurrencyCoin> {
                                         graphIndex != -1
                                             ? widget
                                                 .dataList[graphIndex.toInt()]
-                                                .sellPrice
-                                                .toString()
-                                            : widget.currentSellPrice,
+                                                .sellPrice!
+                                                .toStringAsFixed(2)
+                                            : widget.currentSellPrice
+                                                .toStringAsFixed(2),
                                         overflow: TextOverflow.ellipsis,
                                         style: Theme.of(context)
                                             .textTheme
@@ -223,17 +227,17 @@ class _SelectCurrencyCoinState extends State<SelectCurrencyCoin> {
                                           graphIndex != -1
                                               ? widget
                                                   .dataList[graphIndex.toInt()]
-                                                  .sellRateChange
-                                                  .toString()
+                                                  .sellRateChange!
+                                                  .toStringAsFixed(2)
                                               : widget.currentBuyRateChanges
                                                   .toString(),
                                           textDirection: direction,
                                           style: TextStyle(
                                             color: graphIndex != -1
-                                                ? double.parse(widget
+                                                ? widget
                                                             .dataList[graphIndex
                                                                 .toInt()]
-                                                            .sellRateChange!) >=
+                                                            .sellRateChange! >=
                                                         0
                                                     ? Colors.green
                                                     : Colors.red
@@ -246,10 +250,10 @@ class _SelectCurrencyCoinState extends State<SelectCurrencyCoin> {
                                         ),
                                         // currentBuyPriceChange >= 0?
                                         graphIndex != -1
-                                            ? double.parse(widget
+                                            ? widget
                                                         .dataList[
                                                             graphIndex.toInt()]
-                                                        .sellRateChange!) >=
+                                                        .sellRateChange! >=
                                                     0
                                                 ? const Icon(
                                                     Icons.arrow_drop_up,
@@ -309,14 +313,14 @@ class _SelectCurrencyCoinState extends State<SelectCurrencyCoin> {
                   ),
                 ),
                 SizedBox(height: myHeight * .03),
-                Expanded(
-                  // height: myHeight * .3,
+                SizedBox(
+                  height: myHeight * .4,
                   child: LineChart(
                     mainData(spots),
                   ),
                 ),
-
-                SizedBox(
+                Container(
+                  margin: EdgeInsets.symmetric(vertical: 20),
                   height: myHeight * 0.1,
                   width: myWidth,
                   // color: Colors.amber,
@@ -335,7 +339,13 @@ class _SelectCurrencyCoinState extends State<SelectCurrencyCoin> {
                                   context: context,
                                   builder: (BuildContext context) {
                                     return AlertDialog(
-                                      title: const Text('Save Value'),
+                                      title: Text(
+                                        'Save Value',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyLarge!
+                                            .copyWith(fontSize: 22),
+                                      ),
                                       content: TextField(
                                         controller: widget.textController,
                                         decoration: const InputDecoration(
@@ -358,7 +368,8 @@ class _SelectCurrencyCoinState extends State<SelectCurrencyCoin> {
                                                             .textController
                                                             .text,
                                                         currencyText: widget
-                                                            .currentBuyPrice))
+                                                            .currentBuyPrice
+                                                            .toString()))
                                                 .then((value) => widget
                                                     .textController
                                                     .clear());
@@ -389,7 +400,7 @@ class _SelectCurrencyCoinState extends State<SelectCurrencyCoin> {
                                       width: myWidth * .04,
                                     ),
                                     const Text(
-                                      'Add to portfolio',
+                                      'Set Target Price',
                                       style: TextStyle(fontSize: 20),
                                     ),
                                   ],
@@ -483,7 +494,7 @@ class _SelectCurrencyCoinState extends State<SelectCurrencyCoin> {
       ),
       //  minX: 0,
       //  maxX: 216,
-      minY: 30,
+      //minY: 50,
       //  maxY: 6,
       lineBarsData: [
         LineChartBarData(

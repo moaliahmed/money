@@ -2,7 +2,6 @@ import 'package:chart_sparkline/chart_sparkline.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-
 class CurrencyItemComponent extends StatelessWidget {
 //  final CurrencyBank item;
   final String image;
@@ -41,13 +40,11 @@ class CurrencyItemComponent extends StatelessWidget {
             Expanded(
               flex: 1,
               child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    name,
-                    overflow: TextOverflow.clip,
-                    style: Theme.of(context).textTheme.bodyLarge
-                  ),
+                  Text(name,
+                      overflow: TextOverflow.clip,
+                      style: Theme.of(context).textTheme.bodyLarge),
                 ],
               ),
             ),
@@ -73,7 +70,7 @@ class CurrencyItemComponent extends StatelessWidget {
               ),
             ),
             SizedBox(
-              width: myWidth * 0.02,
+              width: myWidth * 0.01,
             ),
             Expanded(
               flex: 2,
@@ -85,16 +82,18 @@ class CurrencyItemComponent extends StatelessWidget {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Text('بيع',style: Theme.of(context).textTheme.displayLarge,),
                         Text(
-                          currentBuyPrice.toStringAsFixed(2),
-                          overflow: TextOverflow.ellipsis,
-                          style: Theme.of(context).textTheme.headlineLarge
+                          'بيع',
+                          style: Theme.of(context).textTheme.displayLarge,
                         ),
+                        Text(currentBuyPrice.toStringAsFixed(2),
+                            overflow: TextOverflow.ellipsis,
+                            style: Theme.of(context).textTheme.headlineLarge),
                         Row(
                           children: [
                             Text(
-                              currentBuyPriceChange.toStringAsFixed(3),
+                              currentBuyPriceChange.toStringAsFixed(2),
+                              overflow: TextOverflow.ellipsis,
                               style: TextStyle(
                                 color: currentBuyPriceChange >= 0
                                     ? Colors.green
@@ -119,7 +118,10 @@ class CurrencyItemComponent extends StatelessWidget {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Text('شراء',style: Theme.of(context).textTheme.displayLarge,),
+                        Text(
+                          'شراء',
+                          style: Theme.of(context).textTheme.displayLarge,
+                        ),
                         Text(
                           currentSellPrice.toStringAsFixed(2),
                           overflow: TextOverflow.ellipsis,
@@ -128,7 +130,8 @@ class CurrencyItemComponent extends StatelessWidget {
                         Row(
                           children: [
                             Text(
-                              currentSellPriceChange.toStringAsFixed(3),
+                              currentSellPriceChange.toStringAsFixed(2),
+                              overflow: TextOverflow.ellipsis,
                               style: TextStyle(
                                 color: currentSellPriceChange >= 0
                                     ? Colors.green

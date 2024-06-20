@@ -44,10 +44,18 @@ class _BankPageViewState extends State<BankPageView>
                               child: Lottie.asset(
                                   ImageAssets.loadingLightLottie)));
                 default:
-                  if (snapshot.hasError) {
-                    return const Center(
-                      child: Text('Some Error Occurred'),
-                    );
+                  if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                    return cubit.isDark
+                        ? Center(
+                            child: SizedBox(
+                                height: MediaQuery.of(context).size.height * .4,
+                                child:
+                                    Lottie.asset(ImageAssets.errorDarkLottie)))
+                        : Center(
+                            child: SizedBox(
+                                height: MediaQuery.of(context).size.height * .4,
+                                child: Lottie.asset(
+                                    ImageAssets.errorLightLottie)));
                   } else {
                     return Column(
                       children: [
@@ -68,24 +76,6 @@ class _BankPageViewState extends State<BankPageView>
                                   style:
                                       Theme.of(context).textTheme.displayLarge),
                               Spacer(),
-                              InkWell(
-                                onTap: () {},
-                                child: Row(
-                                  children: [
-                                    Text('السوق السوداء',
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .displayLarge!
-                                            .copyWith(fontSize: 18)),
-                                    SizedBox(
-                                        height: 20,
-                                        width: 40,
-                                        child: Lottie.asset(
-                                          ImageAssets.arrowLottieDarkLeft3,
-                                        )),
-                                  ],
-                                ),
-                              )
                             ],
                           ),
                         ),
@@ -121,29 +111,29 @@ class _BankPageViewState extends State<BankPageView>
                                               snapshot.data![index].prices!,
                                           scrapedAt: cubit.returnRelativeTime(
                                               snapshot.data![0].scrapedAt!),
-                                          currentSellRateChanges: double.parse(
+                                          currentSellRateChanges:
                                               snapshot.data![index]
-                                                  .currentSellPriceChange!),
-                                          currentBuyRateChanges: double.parse(
+                                                  .currentSellPriceChange!.toDouble() ,
+                                          currentBuyRateChanges:
                                               cubit.currencyList[index]
-                                                  .currentBuyPriceChange!),
+                                                  .currentBuyPriceChange!.toDouble(),
                                         ),
                                       ));
                                 },
                                 child: CurrencyItemComponent(
                                   image: cubit.currencyList[index].image!,
-                                  currentBuyPrice: double.parse(
-                                      snapshot.data![index].currentBuyPrice!),
-                                  currentSellPrice: double.parse(
-                                      snapshot.data![index].currentSellPrice!),
+                                  currentBuyPrice:
+                                      snapshot.data![index].currentBuyPrice!,
+                                  currentSellPrice:
+                                      snapshot.data![index].currentSellPrice!,
                                   name: cubit.currencyList[index].name!,
-                                  currentBuyPriceChange: double.parse(cubit
+                                  currentBuyPriceChange: cubit
                                       .currencyList[index]
-                                      .currentBuyPriceChange!),
+                                      .currentBuyPriceChange!.toDouble(),
                                   price: cubit.extractCurrencyBuyPrices(
                                       snapshot.data![index].prices!),
-                                  currentSellPriceChange: double.parse(snapshot
-                                      .data![index].currentSellPriceChange!),
+                                  currentSellPriceChange: snapshot
+                                      .data![index].currentSellPriceChange!.toDouble(),
                                 ),
                               );
                             },

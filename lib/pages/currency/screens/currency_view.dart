@@ -28,7 +28,6 @@ class CurrencyView extends StatelessWidget {
                 child: PageView(
                   children: [
                     BankPageView(),
-                    BlackMarketPageView(),
                   ],
                 ),
               ),

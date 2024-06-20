@@ -42,11 +42,19 @@ class _SilverPageViewState extends State<SilverPageView>
                             child:
                                 Lottie.asset(ImageAssets.loadingLightLottie)));
               default:
-                if (snapshot.hasError) {
-                  return Center(
-                    child: Text('Some Error Occurred'),
-                  );
-                } else {
+                if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return cubit.isDark
+                      ? Center(
+                      child: SizedBox(
+                          height: MediaQuery.of(context).size.height * .4,
+                          child:
+                          Lottie.asset(ImageAssets.errorDarkLottie)))
+                      : Center(
+                      child: SizedBox(
+                          height: MediaQuery.of(context).size.height * .4,
+                          child: Lottie.asset(
+                              ImageAssets.errorLightLottie)));
+                }  else {
                   return Column(
                     children: [
                       Container(

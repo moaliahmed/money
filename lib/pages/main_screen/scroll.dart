@@ -74,7 +74,7 @@ class _CryptoPageViewState extends State<Scroll>
                         ),
                         Expanded(
                           child: ListView.separated(
-                            controller: cubit.cryptoScrollController,
+                          //  controller: cubit.cryptoScrollController,
                             separatorBuilder: (context, index) {
                               return const Divider(
                                 indent: 15,
@@ -86,7 +86,8 @@ class _CryptoPageViewState extends State<Scroll>
                             itemCount: 20,
                             shrinkWrap: true,
                             itemBuilder: (context, index) {
-                              double opacity = cubit.scrollAnimation(index, 90,cubit.cryptoScrollController);
+                              double opacity = 90;
+                            //  double opacity = cubit.scrollAnimation(index, 90,cubit.cryptoScrollController);
                               double scale = opacity;
                               if (opacity > 1) opacity = 1.0;
                               if (opacity < 0) opacity = 0.0;

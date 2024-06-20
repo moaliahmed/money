@@ -13,22 +13,25 @@ class AppRoot extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-        create: (context) => AppCubit()
-          ..initialFunction()
-          ..changeAppMode(fromShared: isDark)
-          ..createDatabase(),
-        child: BlocConsumer<AppCubit, AppState>(
-          listener: (context, state) {},
-          builder: (context, state) {
-            var cubit = AppCubit.get(context);
-            return MaterialApp(
-              theme: lightTheme(),
-              darkTheme: darkTheme(),
-              themeMode: cubit.isDark ? ThemeMode.dark : ThemeMode.light,
-              debugShowCheckedModeBanner: false,
-              home: const OpenScreen(),
-            );
-          },
-        ));
+      create: (context) => AppCubit()
+        ..initialFunction()
+        ..getCurrencyAiData()
+        ..getGoldAiData()
+        ..changeAppMode(fromShared: isDark)
+        ..createDatabase(),
+      child: BlocConsumer<AppCubit, AppState>(
+        listener: (context, state) {},
+        builder: (context, state) {
+          var cubit = AppCubit.get(context);
+          return MaterialApp(
+            theme: lightTheme(),
+            darkTheme: darkTheme(),
+            themeMode: cubit.isDark ? ThemeMode.dark : ThemeMode.light,
+            debugShowCheckedModeBanner: false,
+            home: const OpenScreen(),
+          );
+        },
+      ),
+    );
   }
 }

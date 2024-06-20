@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gap/gap.dart';
 
@@ -72,14 +73,16 @@ Widget headCardComponent(
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Column(
-                      children: [
-                        Text('بيع',
-                            style: Theme.of(context).textTheme.displayLarge),
-                        Text('EGP $buyPrice',
-                            overflow: TextOverflow.ellipsis,
-                            style: Theme.of(context).textTheme.headlineLarge),
-                      ],
+                    Expanded(
+                      child: Column(
+                        children: [
+                          Text('بيع',
+                              style: Theme.of(context).textTheme.displayLarge),
+                          Text('EGP $buyPrice',
+                              overflow: TextOverflow.ellipsis,
+                              style: Theme.of(context).textTheme.headlineLarge),
+                        ],
+                      ),
                     ),
                     SizedBox(
                       height: 40,
@@ -89,17 +92,18 @@ Widget headCardComponent(
                       ),
                     ),
                     Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
                           'اخر تحديث',
-                          style: Theme.of(context).textTheme.headlineLarge,
+                          style: Theme.of(context).textTheme.headlineLarge!.copyWith(fontSize: 18),
                         ),
                         Directionality(
                           textDirection: TextDirection.rtl,
                           child: Text(
                             lastUpdate,
+                            overflow: TextOverflow.ellipsis,
                             style: Theme.of(context).textTheme.displayLarge,
 
                           ),
@@ -113,18 +117,20 @@ Widget headCardComponent(
                         color: Theme.of(context).colorScheme.onSurface,
                       ),
                     ),
-                    Column(
-                      children: [
-                        Text(
-                          'شراء',
-                          style: Theme.of(context).textTheme.displayLarge,
-                        ),
-                        Text(
-                          'EGP $sellPrice',
-                          overflow: TextOverflow.ellipsis,
-                          style: Theme.of(context).textTheme.headlineLarge,
-                        ),
-                      ],
+                    Expanded(
+                      child: Column(
+                        children: [
+                          Text(
+                            'شراء',
+                            style: Theme.of(context).textTheme.displayLarge,
+                          ),
+                          Text(
+                            'EGP $sellPrice',
+                            overflow: TextOverflow.ellipsis,
+                            style: Theme.of(context).textTheme.headlineLarge,
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 )
